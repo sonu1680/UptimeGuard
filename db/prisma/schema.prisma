@@ -1,0 +1,65 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User{
+id String @id @unique @default(uuid())
+name String
+email String @unique
+monitor Monitor[]
+}
+
+model Monitor{
+monitorId String @id @unique @default(uuid())
+websiteName String
+url String
+createAt DateTime @default(now())
+isPaused Boolean? @default(false)
+checkInterval String
+lastCheckAt String?
+userId String
+User User @relation(fields: [userId],references: [id]) 
+alertLogs AlertLog[]
+notification Notification[]
+responseLog ResponseLog[]
+
+}
+
+model ResponseLog{
+  id String @id @default(uuid())
+  responseTime String
+  responseCode String
+  checkAt DateTime
+  monitorId String
+  monitor Monitor @relation(fields: [monitorId], references: [monitorId])   
+}
+
+model  AlertLog{
+  id String @id @default(uuid())
+  msg String
+  alertType String
+  sentAt DateTime
+  monitorId String
+  monitor Monitor @relation(fields: [monitorId],references: [monitorId])
+
+}
+
+model Notification{
+  id String @id @default(uuid())
+  emailId String?
+  telegramId String?
+  monitorId String
+  monitor Monitor @relation(fields: [monitorId],references: [monitorId])  
+   
+
+}
+
+

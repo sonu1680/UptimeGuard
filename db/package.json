@@ -1,0 +1,32 @@
+{
+  "name": "worker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsc -b && node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.8.2",
+    "axios": "^1.9.0",
+    "cors": "^2.8.5",
+    "cron": "^4.3.1",
+    "express": "^5.1.0",
+    "node-telegram-bot-api": "^0.66.0",
+    "nodemailer": "^7.0.3",
+    "redis": "^5.1.1"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.4",
+    "@types/cors": "^2.8.18",
+    "@types/cron": "^2.4.3",
+    "@types/express": "^5.0.2",
+    "@types/node-telegram-bot-api": "^0.64.8",
+    "@types/nodemailer": "^6.4.17",
+    "@types/redis": "^4.0.11",
+    "prisma": "^6.8.2"
+  }
+}
