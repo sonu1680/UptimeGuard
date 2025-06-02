@@ -6,7 +6,7 @@ const redisClient = createClient();
 
 async function main() {
   await redisClient.connect();
-
+console.log("connected")
   while (true) {
     const res = await redisClient.rPop("message");
     if (res) {
