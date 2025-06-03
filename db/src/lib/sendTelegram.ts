@@ -1,26 +1,22 @@
 
 import TelegramBot from "node-telegram-bot-api";
-
 const TOKEN = process.env.TELEGRAM_TOKEN!;
 const bot = new TelegramBot(TOKEN, { polling: true });
 
-export const sendToTelegram = async (chatId: string) => {
+export const sendToTelegram = async (chatId: string,msg:string) => {
   try {
-    await bot.sendMessage(chatId, "site is down");
-
-    console.log(`Message sent to chat ID ${chatId}`);
+    await bot.sendMessage(chatId, msg);
+return 200;
+    //console.log(`Message sent to chat ID ${chatId}`);
   } catch (error) {
-    console.error("Error sending Telegram message:", error);
+    return 500
+    //console.error("Error sending Telegram message:", error);
   }
 };
 
 
-bot.onText(/\/id/, (msg) => {
-  const chatId = msg.chat.id;
-  bot.sendMessage(chatId, `Your chat ID is: ${chatId}`);
-});
 bot.on("message", (msg) => {
   const chatId = msg.chat.id;
-  bot.sendMessage(chatId, "Thanks, got your message!, we are watching your site :)");
+  bot.sendMessage(chatId, `Thanks, got your message!, Here is your ID:${chatId} and start watching your site :)`);
  
 });

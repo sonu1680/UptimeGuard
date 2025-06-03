@@ -24,9 +24,9 @@ url String
 createAt DateTime @default(now())
 isPaused Boolean? @default(false)
 checkInterval String
-lastCheckAt String?
+lastCheckAt DateTime @default(now())
 userId String
-User User @relation(fields: [userId],references: [id]) 
+User User @relation(fields: [userId],references: [id],onDelete: Cascade) 
 alertLogs AlertLog[]
 notification Notification[]
 responseLog ResponseLog[]
@@ -39,7 +39,7 @@ model ResponseLog{
   responseCode String
   checkAt DateTime
   monitorId String
-  monitor Monitor @relation(fields: [monitorId], references: [monitorId])   
+  monitor Monitor @relation(fields: [monitorId], references: [monitorId],onDelete: Cascade)   
 }
 
 model  AlertLog{
@@ -48,7 +48,7 @@ model  AlertLog{
   alertType String
   sentAt DateTime
   monitorId String
-  monitor Monitor @relation(fields: [monitorId],references: [monitorId])
+  monitor Monitor @relation(fields: [monitorId],references: [monitorId],onDelete: Cascade)
 
 }
 
@@ -57,7 +57,7 @@ model Notification{
   emailId String?
   telegramId String?
   monitorId String
-  monitor Monitor @relation(fields: [monitorId],references: [monitorId])  
+  monitor Monitor @relation(fields: [monitorId],references: [monitorId],onDelete: Cascade)  
    
 
 }

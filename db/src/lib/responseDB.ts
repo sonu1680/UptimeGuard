@@ -15,6 +15,18 @@ export const responseDB = async (data: dataFromEngine) => {
                 },
             })
         );
+        const lastCheckAts = await tryCatchHandler(() =>
+          prisma.monitor.update({
+            where: {
+              monitorId: site.monitorId,
+            },
+            data: {
+              lastCheckAt:new Date()
+            },
+          })
+        );
+        
+
     }
   }
 };

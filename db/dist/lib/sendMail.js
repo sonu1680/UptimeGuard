@@ -21,15 +21,15 @@ const transporter = nodemailer_1.default.createTransport({
         pass: process.env.MAIL_APP_PSK,
     },
 });
-const sendMail = (id) => __awaiter(void 0, void 0, void 0, function* () {
+const sendMail = (id, msg) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // await transporter.sendMail({
-        //   from: '"sonu" <thecrazymanofficial0@gmail.com>',
-        //   to: "sonupandit1680@gmail.com",
-        //   subject: "Hello ✔",
-        //   text: "Hello world?",
-        //   html: "<b>Hello world?</b>",
-        // });
+        yield transporter.sendMail({
+            from: '"WATCH TOWER" <thecrazymanofficial0@gmail.com>',
+            to: id,
+            subject: "Hello ✔",
+            text: `${msg}`,
+            html: "<b>Hello user?</b>",
+        });
         return 200;
     }
     catch (error) {

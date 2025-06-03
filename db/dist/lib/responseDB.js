@@ -23,6 +23,15 @@ const responseDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
                     checkAt: site.checkAt,
                 },
             }));
+            const lastCheckAts = yield (0, tryCathHandler_1.tryCatchHandler)(() => prisma_1.prisma.monitor.update({
+                where: {
+                    monitorId: site.monitorId,
+                },
+                data: {
+                    lastCheckAt: new Date()
+                },
+            }));
+            console.log(lastCheckAts);
         }
     }
 });

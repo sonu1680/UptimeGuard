@@ -15,6 +15,7 @@ const redisClient = (0, redis_1.createClient)();
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         yield redisClient.connect();
+        console.log("connected");
         while (true) {
             const res = yield redisClient.rPop("message");
             if (res) {

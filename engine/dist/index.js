@@ -10,25 +10,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const cron_1 = require("cron");
-const tryCatchHandler_1 = require("./lib/tryCatchHandler");
-const prisma_1 = require("./lib/prisma");
-const RedisManager_1 = require("./lib/RedisManager");
+const fetchFromDB_1 = require("./lib/fetchFromDB");
+const MIN_5 = "5";
+const MIN_30 = "30";
+const HR_1 = "60";
+const HR_24 = "1440";
+//testiing purpose only
 const job = new cron_1.CronJob("*/2 * * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
-    const res = yield (0, tryCatchHandler_1.tryCatchHandler)(() => prisma_1.prisma.monitor.findMany({
-        where: {
-            checkInterval: "2",
-        },
-        select: {
-            url: true,
-            monitorId: true,
-            checkInterval: true,
-        },
-    }));
-    if (res.data) {
-        RedisManager_1.RedisManager.getInstance().sendToWorker(res.data);
-    }
-    else {
-        console.error("Failed to fetch monitors or none found.");
-    }
+    console.log("runnung at 2 sec");
+    yield (0, fetchFromDB_1.fetchFromDB)("2");
+}));
+//-------------------
+const job1 = new cron_1.CronJob("0 */5 * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, fetchFromDB_1.fetchFromDB)(MIN_5);
+}));
+const job2 = new cron_1.CronJob("0 */30 * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, fetchFromDB_1.fetchFromDB)(MIN_30);
+}));
+const job3 = new cron_1.CronJob("0 0 * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, fetchFromDB_1.fetchFromDB)(HR_1);
+}));
+const job4 = new cron_1.CronJob("0 0 0 * * *", () => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, fetchFromDB_1.fetchFromDB)(HR_24);
 }));
 job.start();
+job1.start();
+job2.start();
+job3.start();
+job4.start();

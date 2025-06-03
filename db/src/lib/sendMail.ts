@@ -7,16 +7,16 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendMail = async (id: string):Promise<number>=> {
+export const sendMail = async (id: string,msg:string):Promise<number>=> {
 try {
     
-    // await transporter.sendMail({
-    //   from: '"sonu" <thecrazymanofficial0@gmail.com>',
-    //   to: "sonupandit1680@gmail.com",
-    //   subject: "Hello ✔",
-    //   text: "Hello world?",
-    //   html: "<b>Hello world?</b>",
-    // });
+    await transporter.sendMail({
+      from: '"WATCH TOWER" <thecrazymanofficial0@gmail.com>',
+      to: id,
+      subject: "Hello ✔",
+      text: `${msg}`,
+      html: "<b>Hello user?</b>",
+    });
     return 200;
 } catch (error) {
     return 500

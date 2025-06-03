@@ -48,8 +48,9 @@ export class RedisManager {
 
   public sendAlert(data: dataFromWorker) {
     for (const site of data.sites) {
-      if (site) {
-        if (parseInt(site.responseCode) >= SITE_DOWN_CODE_RANGE) {
+      if (site && site.responseCode) {
+        const code = parseInt(site.responseCode);
+        if (!isNaN(code) && code >= SITE_DOWN_CODE_RANGE) {
           const id = this.randomId();
           this.publisher.lPush(
             "alert_process",
