@@ -16,7 +16,7 @@ console.log("connected")
         await redisClient.publish(response.batchId,JSON.stringify(response))
         
       } catch (error) {
-        console.error("Error parsing message:", error);
+       // console.error("Error parsing message:", error);
       }
     } else {
       await new Promise((resolve) => setTimeout(resolve, 500));
