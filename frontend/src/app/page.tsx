@@ -1,21 +1,8 @@
-import { auth, signIn } from "@/lib/auth";
+import React from "react";
+import UptimeMonitorLanding from "../pagess/landing-page";
 
-export default async function page() {
+const page = () => {
+  return <UptimeMonitorLanding />;
+};
 
-  const session=await auth();
-if(session){
-
-  console.log(session)
-}
-  return (
-    <form
-      action={async () => {
-        "use server";
-        await signIn("google");
-      }}
-    >
-   
-      <button type="submit">Signin with Google</button>
-    </form>
-  );
-}
+export default page;
