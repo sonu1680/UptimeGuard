@@ -3,12 +3,13 @@ import { responseHandler } from "@/lib/responseHandler";
 import { tryCatchHandler } from "@/lib/tryCatchHandler";
 
 export async function DELETE(req: Request) {
-  const data = await req.json();
 
+  const url=new URL(req.url);
+  const id=url.searchParams.get("id")
   const res = await tryCatchHandler(() =>
     prisma.monitor.delete({
       where: {
-        monitorId: data.monitorId,
+        monitorId: id!
       },
     })
   );

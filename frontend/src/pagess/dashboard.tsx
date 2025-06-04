@@ -61,6 +61,7 @@ import { useRouter } from "next/navigation";
 import { INTERVAL_CHECK } from "@/constant";
 import axios from "axios";
 import { toast } from "sonner";
+import { tryCatchHandler } from "@/lib/tryCatchHandler";
 
 
 export default function Dashboard() {
@@ -154,8 +155,19 @@ export default function Dashboard() {
   };
   
 
-  const handleDeleteWebsite = (id: string) => {
-    setWebsites(websites?.filter((w) => w.monitorId !== id));
+  const handleDeleteWebsite = async(id: string) => {
+    
+try {
+  const res = await axios.delete(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/deleteSite?id=${id}`
+  );
+  
+  toast.success("website deleted!")
+  setWebsites(websites?.filter((w) => w.monitorId !== id));
+} catch (error) {
+  toast.success("Something went wrong!");
+
+}
   };
 
   const validWebsites =
@@ -258,7 +270,7 @@ export default function Dashboard() {
                         <Input
                           id="name"
                           placeholder="My Website"
-                          value={newWebsite.websiteName||""}
+                          value={newWebsite.websiteName || ""}
                           onChange={(e) =>
                             setNewWebsite({
                               ...newWebsite,
@@ -275,7 +287,7 @@ export default function Dashboard() {
                         <Input
                           id="url"
                           placeholder="https://example.com"
-                          value={newWebsite.url||""}
+                          value={newWebsite.url || ""}
                           onChange={(e) =>
                             setNewWebsite({
                               ...newWebsite,
@@ -295,7 +307,7 @@ export default function Dashboard() {
                         <Input
                           id="email"
                           placeholder="example@xyz.com"
-                          value={newWebsite.emailId||""}
+                          value={newWebsite.emailId || ""}
                           onChange={(e) =>
                             setNewWebsite({
                               ...newWebsite,
@@ -306,16 +318,27 @@ export default function Dashboard() {
                         />
                       </div>
                       <div className="grid gap-2">
-                        <Label htmlFor="url" className="text-sm font-medium">
-                          Alert Telegram ID{" "}
-                          <span className="text-xs font-extralight ">
-                            (optional)
+                        <Label
+                          htmlFor="telegram"
+                          className="text-sm font-medium"
+                        >
+                          Alert Telegram chat ID{" "}
+                          <span className="text-xs font-extralight">
+                            (optional) —
+                            <a
+                              href="https://t.me/uotimemonitorsonubot"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-500 underline hover:text-blue-600 ml-1"
+                            >
+                              <span className="text-xs font-bold " > Get your chat ID</span>
+                            </a>
                           </span>
                         </Label>
                         <Input
                           id="telegram"
-                          placeholder="example@xyz.com"
-                          value={newWebsite.telegramId||""}
+                          placeholder="123456789"
+                          value={newWebsite.telegramId || ""}
                           onChange={(e) =>
                             setNewWebsite({
                               ...newWebsite,
