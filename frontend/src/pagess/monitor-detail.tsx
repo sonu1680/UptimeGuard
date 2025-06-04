@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -22,35 +22,50 @@ import {
 } from "lucide-react";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
-
 import Link from "next/link";
 import { WebsiteStatusBadge } from "@/components/website-status-badge";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { ResponseTimeDetailedChart } from "@/components/response-time-detailed-chart";
 import { AlertLogItem } from "@/components/alert-log-item";
-import { MonitorDetailTYPE } from "@/types";
+import {  MonitorDetailView } from "@/types";
 import { MOCK_MONITOR_DETAILS } from "@/constant";
-import { useSearchParams } from "next/navigation";
-
-
-
+import { useParams } from "next/navigation";
+import { useData } from "@/providers/websiteProvider";
+import axios from "axios";
 
 
 export default function MonitorDetail() {
-  const [monitor] = useState<MonitorDetailTYPE>(MOCK_MONITOR_DETAILS);
+  const [monitor, setMonitor] =
+    useState<MonitorDetailView|null>(null);
   const [timeRange, setTimeRange] = useState<"24h" | "7d" | "30d">("24h");
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
- 
+  const {data,loading}=useData();
+  const params = useParams();
+  const monitorId = params.id;
+
+const getData=async()=>{
+  const res = await axios.get(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/getDetailView?monitorid=${monitorId}`
+  );
+ // console.log(res.data?.data?.data)
+  setMonitor(res.data?.data?.data);
+}
+
+
+
   useEffect(() => {
+    if(monitorId){
+      getData();
+    }
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  }, [monitorId]);
 
-  const formatLastCheck = (timestamp: string) => {
+  const formatLastCheck = (timestamp: Date) => {
     const date = new Date(timestamp);
     const now = new Date();
     const diffInMinutes = Math.floor(
@@ -67,16 +82,18 @@ export default function MonitorDetail() {
     switch (type) {
       case "email":
         return <Mail className="h-4 w-4" />;
-      case "sms":
+      case "telegram":
         return <Smartphone className="h-4 w-4" />;
-      case "slack":
-        return <MessageSquare className="h-4 w-4" />;
-      case "webhook":
-        return <Webhook className="h-4 w-4" />;
+   
+     
       default:
         return <Bell className="h-4 w-4" />;
     }
   };
+
+if(!monitor){
+  return <p>loading</p>
+}
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -110,13 +127,14 @@ export default function MonitorDetail() {
                 </Link>
                 <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
                   <Avatar className="h-8 w-8 sm:h-10 sm:w-10 border-2 border-primary/20">
+                    <AvatarImage src={monitor.icon || ""} />
                     <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-sm sm:text-lg">
-                      {monitor.favicon}
+                      {monitor.websiteName.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0">
                     <h1 className="text-sm sm:text-lg font-bold bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent truncate">
-                      {monitor.name}
+                      {monitor.websiteName}
                     </h1>
                     <div className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-muted-foreground">
                       <span className="truncate">{monitor.url}</span>
@@ -127,7 +145,7 @@ export default function MonitorDetail() {
               </div>
               <div className="flex items-center gap-2 sm:gap-3">
                 <WebsiteStatusBadge
-                  status={monitor.status}
+                  status={monitor.status == "UP" ? "online" : "offline"}
                   className="text-xs"
                 />
                 <ThemeToggle />
@@ -165,7 +183,7 @@ export default function MonitorDetail() {
                         Online
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Last: {formatLastCheck(monitor.lastCheck)}
+                        Last: {formatLastCheck(monitor.lastCheckAt)}
                       </p>
                     </CardContent>
                   </Card>
@@ -181,7 +199,7 @@ export default function MonitorDetail() {
                       <div className="text-lg sm:text-2xl font-bold">
                         {monitor.responseTime}ms
                       </div>
-                      <p className="text-xs text-muted-foreground">Avg 24h</p>
+                      <p className="text-xs text-muted-foreground">Last check</p>
                     </CardContent>
                   </Card>
 
@@ -196,7 +214,7 @@ export default function MonitorDetail() {
                       <div className="text-lg sm:text-2xl font-bold text-green-600 dark:text-green-400">
                         {monitor.uptime}%
                       </div>
-                      <p className="text-xs text-muted-foreground">Last 30d</p>
+                      {/* <p className="text-xs text-muted-foreground">Last 30d</p> */}
                     </CardContent>
                   </Card>
 
@@ -205,14 +223,13 @@ export default function MonitorDetail() {
                       <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
                         Check Interval
                       </CardTitle>
-                      <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                     </CardHeader>
                     <CardContent className="p-3 sm:p-4 pt-0">
                       <div className="text-lg sm:text-2xl font-bold">
-                        {monitor.checkInterval}s
+                        {monitor.checkInterval} MIN
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        {monitor.location}
+                        {monitor.location || "India"}
                       </p>
                     </CardContent>
                   </Card>
@@ -276,7 +293,7 @@ export default function MonitorDetail() {
 
                     {/* response time chart */}
                     <ResponseTimeDetailedChart
-                      data={monitor.responseHistory}
+                      data={monitor.responseLog}
                       timeRange={timeRange}
                     />
                   </TabsContent>
@@ -322,7 +339,7 @@ export default function MonitorDetail() {
                     </div>
 
                     <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
-                      {monitor.alertMethods.map((method, index) => (
+                      {["email","telegram"].map((method, index) => (
                         <Card
                           key={index}
                           className="bg-gradient-to-br from-card/50 to-muted/30 backdrop-blur-sm border-border/50"
@@ -330,23 +347,25 @@ export default function MonitorDetail() {
                           <CardHeader className="pb-3 p-4 sm:p-6">
                             <CardTitle className="flex items-center justify-between text-sm sm:text-base">
                               <div className="flex items-center space-x-2">
-                                {getMethodIcon(method.type)}
+                                {getMethodIcon(method)}
                                 <span className="capitalize">
-                                  {method.type}
+                                  {method}
                                 </span>
                               </div>
                               <Badge
                                 className={`text-xs ${
-                                  method.enabled
+                                  // method.enabled
+                                  true
                                     ? "bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30"
                                     : "bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30"
                                 }`}
                               >
-                                {method.enabled ? "Enabled" : "Disabled"}
+                                {/* {method.enabled ? "Enabled" : "Disabled"} */}
+                                Enabled
                               </Badge>
                             </CardTitle>
                           </CardHeader>
-                          <CardContent className="p-4 sm:p-6 pt-0">
+                          {/* <CardContent className="p-4 sm:p-6 pt-0">
                             <div className="text-sm text-muted-foreground mb-3 truncate">
                               {method.target}
                             </div>
@@ -366,7 +385,7 @@ export default function MonitorDetail() {
                                 Test
                               </Button>
                             </div>
-                          </CardContent>
+                          </CardContent> */}
                         </Card>
                       ))}
                     </div>

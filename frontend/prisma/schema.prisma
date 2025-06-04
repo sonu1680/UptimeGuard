@@ -53,6 +53,10 @@ model  AlertLog{
   msg String
   alertType String
   sentAt DateTime
+  responseTime String
+  responseCode String
+  status String
+  errorMsg String
   monitorId String
   monitor Monitor @relation(fields: [monitorId],references: [monitorId],onDelete: Cascade)
 

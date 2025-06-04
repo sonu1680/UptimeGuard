@@ -41,13 +41,12 @@ export function AuthForm() {
     try {
       setIsLoading(true);
       setError("");
-      console.log(provider)
        await signIn(provider,{ callbackUrl: "/dashboard" });
 
       setSuccess(`${provider} login successful! Redirecting...`);
      
     } catch (err) {
-      console.log(err)
+      console.error(err)
       setError(`Failed to login with ${provider}. Please try again.`);
     } finally {
       setIsLoading(false);
@@ -94,9 +93,11 @@ export function AuthForm() {
                 icon={Github}
                 provider="GitHub"
                 onClick={() => handleSocialLogin("GitHub")}
+                //@ts-ignore
                 disabled={isLoading}
               />
               <SocialButton
+              //@ts-ignore
                 icon={(props) => (
                   <svg viewBox="0 0 24 24" {...props}>
                     <path

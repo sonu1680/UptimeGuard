@@ -3,10 +3,13 @@ import { ThemeProvider } from './theme-provider'
 import { SessionProvider } from 'next-auth/react';
 import { AuthProvider } from './authProvider';
 import { DataProvider } from './websiteProvider';
+import { Toaster } from 'sonner';
 
 const Provider = ({children}:{children:React.ReactNode}) => {
   return (
+    
     <SessionProvider>
+      <Toaster  />
       <AuthProvider>
 <DataProvider>
 

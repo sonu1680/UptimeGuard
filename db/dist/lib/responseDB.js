@@ -35,7 +35,6 @@ const responseDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
                     status: site.status
                 },
             }));
-            console.log(a);
         }
     }
 });

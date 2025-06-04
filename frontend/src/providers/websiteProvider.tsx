@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "./authProvider";
 import { Website } from "@/types";
+import { usePathname } from "next/navigation";
 
 
 
@@ -23,7 +24,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const [data, setData] = useState<Website[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  
 const {isAuthenticated,user}=useAuth()
 
   const fetchData = async (id:string) => {

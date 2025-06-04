@@ -1,31 +1,33 @@
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { AlertLogItemProps } from "@/types"
-import { AlertTriangle, CheckCircle, Clock, Mail, MessageSquare, Smartphone } from "lucide-react"
+import { AlertTriangle, CheckCircle, Clock, Mail, MessageSquare, Send, Smartphone } from "lucide-react"
 
 
 export function AlertLogItem({ alert }: AlertLogItemProps) {
   const getAlertIcon = () => {
-    switch (alert.type) {
-      case "down":
-        return <AlertTriangle className="h-4 w-4 text-red-500" />
+    switch (alert.alertType) {
+      case "TELEGRAM":
+        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+      case "EMAIL":
+        return <AlertTriangle className="h-4 w-4 text-red-500" />;
       case "up":
-        return <CheckCircle className="h-4 w-4 text-green-500" />
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
       case "slow":
-        return <Clock className="h-4 w-4 text-yellow-500" />
+        return <Clock className="h-4 w-4 text-yellow-500" />;
       case "warning":
-        return <AlertTriangle className="h-4 w-4 text-orange-500" />
+        return <AlertTriangle className="h-4 w-4 text-orange-500" />;
       default:
-        return <Clock className="h-4 w-4 text-muted-foreground" />
+        return <Clock className="h-4 w-4 text-muted-foreground" />;
     }
   }
 
   const getMethodIcon = () => {
-    switch (alert.method) {
-      case "email":
+    switch (alert.alertType) {
+      case "EMAIL":
         return <Mail className="h-3 w-3" />
-      case "sms":
-        return <Smartphone className="h-3 w-3" />
+      case "TELEGRAM":
+        return <Send className="h-3 w-3" />
       case "slack":
         return <MessageSquare className="h-3 w-3" />
       case "webhook":
@@ -36,10 +38,10 @@ export function AlertLogItem({ alert }: AlertLogItemProps) {
   }
 
   const getAlertColor = () => {
-    switch (alert.type) {
-      case "down":
+    switch (alert.alertType) {
+      case "TELEGRAM":
         return "border-l-red-500 bg-red-500/5"
-      case "up":
+      case "EMAIL":
         return "border-l-green-500 bg-green-500/5"
       case "slow":
         return "border-l-yellow-500 bg-yellow-500/5"
@@ -50,7 +52,7 @@ export function AlertLogItem({ alert }: AlertLogItemProps) {
     }
   }
 
-  const formatTimestamp = (timestamp: string) => {
+  const formatTimestamp = (timestamp: Date) => {
     const date = new Date(timestamp)
     return date.toLocaleString()
   }
@@ -65,23 +67,28 @@ export function AlertLogItem({ alert }: AlertLogItemProps) {
             <div className="mt-0.5">{getAlertIcon()}</div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center space-x-2 mb-1">
-                <span className="font-medium text-foreground">{alert.message}</span>
-                {alert.responseTime && (
+                <span className="font-medium text-foreground">{alert.msg}</span>
+                {alert.alertType && (
                   <Badge variant="outline" className="text-xs">
                     {alert.responseTime}ms
                   </Badge>
                 )}
               </div>
               <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                <span>{formatTimestamp(alert.timestamp)}</span>
+                <span>{formatTimestamp(alert.sentAt)}</span>
                 <div className="flex items-center space-x-1">
                   {getMethodIcon()}
-                  <span className="capitalize">{alert.method}</span>
+                  <span className="capitalize">{alert.alertType}</span>
                 </div>
-                {alert.resolved && (
-                  <Badge className="bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30 text-xs">
-                    Resolved
+                {alert.status && (
+                  <>
+                  <Badge className="bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30 text-xs">
+                    DOWN
                   </Badge>
+                   <Badge className="bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30 text-xs">
+                   {alert.responseCode}
+                 </Badge>
+                  </>
                 )}
               </div>
             </div>

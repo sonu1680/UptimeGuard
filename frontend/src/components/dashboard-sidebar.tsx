@@ -16,9 +16,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { MENU_ITEMS } from "@/constant"
+import { toast } from "sonner"
+import { useAuth } from "@/providers/authProvider"
+import { signOut } from "next-auth/react"
 
 
 export function DashboardSidebar() {
+const {user}=useAuth()
   return (
     <Sidebar className="border-r border-border/50 bg-background/95 backdrop-blur-xl">
       <SidebarHeader className="border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
@@ -58,6 +62,7 @@ export function DashboardSidebar() {
               {MENU_ITEMS.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
+                    onClick={() => toast("Welcome To Dashboard!")}
                     asChild
                     isActive={item.isActive}
                     className="group relative overflow-hidden rounded-xl transition-all duration-300 hover:bg-primary/10 data-[active=true]:bg-gradient-to-r data-[active=true]:from-primary/20 data-[active=true]:to-primary/5 data-[active=true]:border-primary/20"
@@ -100,20 +105,20 @@ export function DashboardSidebar() {
               <div className="flex items-center space-x-3 p-3 rounded-xl hover:bg-muted/50 transition-all duration-300 cursor-pointer">
                 <Avatar className="h-10 w-10 rounded-xl border-2 border-primary/20">
                   <AvatarImage
-                    src="/placeholder.svg?height=40&width=40"
+                    src={user?.image}
                     alt="User"
                   />
                   <AvatarFallback className="rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-semibold">
-                    SP
+                    {user?.name.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Sonu Pandit</span>
+                  <span className="truncate font-semibold">{user?.name}</span>
                   <span className="truncate text-xs text-muted-foreground">
-                    sonu pandit@gmail.com
+                    {user?.email}
                   </span>
                 </div>
-                <LogOut className="ml-auto size-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                <LogOut  onClick={(async()=>await signOut({callbackUrl:"/"}))} className="ml-auto hover:text-red-600 size-4 text-muted-foreground group-hover:text-foreground transition-colors" />
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>

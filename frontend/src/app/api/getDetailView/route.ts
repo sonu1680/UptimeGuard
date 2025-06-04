@@ -4,15 +4,17 @@ import { tryCatchHandler } from "@/lib/tryCatchHandler";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const userId = searchParams.get("userid");
+  const monitorId = searchParams.get("monitorid");
   const res = await tryCatchHandler(() =>
-    prisma.user.findFirst({
+    prisma.monitor.findFirst({
       where: {
-        id: userId!,
+        monitorId: monitorId!,
       },
-      select:{
-        monitor:true
-      }
+      include: {
+       alertLogs:true,
+       notification:true,
+       responseLog:true
+      },
     })
   );
   return responseHandler(res, "Monitoring website Details", "User not found", 200, 404, res);

@@ -5,7 +5,8 @@ export type websites = {
   responseTime?: string;
   responseCode?: string;
   checkAt?: Date;
-  status?:string
+  status?: string;
+  error?: string;
 };
 export type dataFromEngine = {
   batchId: string;

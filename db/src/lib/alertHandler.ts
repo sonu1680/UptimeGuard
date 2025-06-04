@@ -6,6 +6,7 @@ import { tryCatchHandler } from "./tryCathHandler";
 const MESSAGE="your site is down plz update it"
 export const alertHandler = async (data: websites) => {
   if (data) {
+    console.log(data,"sonu")
     const alertMode = await tryCatchHandler(() =>
       prisma.notification.findMany({
         where: {
@@ -24,6 +25,10 @@ export const alertHandler = async (data: websites) => {
                   sentAt: new Date(),
                   msg: MESSAGE,
                   alertType: "EMAIL",
+                  errorMsg: data.error || "",
+                  responseCode: data.responseCode || "",
+                  responseTime: data.responseTime || "",
+                  status: data.status || "DOWN",
                 },
               })
             );
@@ -42,6 +47,10 @@ export const alertHandler = async (data: websites) => {
                sentAt: new Date(),
                msg: MESSAGE,
                alertType: "TELEGRAM",
+               errorMsg: data.error || "",
+               responseCode: data.responseCode || "",
+               responseTime: data.responseTime || "",
+               status: data.status || "DOWN",
              },
            })
          );

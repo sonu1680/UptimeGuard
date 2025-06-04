@@ -63,8 +63,8 @@ import { useRouter } from "next/navigation";
 
 
 export default function Dashboard() {
-  const {data,error,loading} = useData();
-  const [websites, setWebsites] = useState<Website[]>();
+  const { data, loading }: { data: Website[],loading:boolean } = useData();
+  const [websites, setWebsites] = useState<Website[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -74,9 +74,9 @@ export default function Dashboard() {
 
   const router=useRouter()
   useEffect(() => {
-    if(!loading){
-      setWebsites(data);
-    }
+ if(!loading){
+  setWebsites(data);
+ }
 
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -216,11 +216,7 @@ const {isAuthenticated}=useAuth()
                       <span className="sm:hidden">Add</span>
                     </Button>
                   </DialogTrigger>
-                  <Button
-                    onClick={async () => await signOut({ callbackUrl: "/" })}
-                  >
-                    {isAuthenticated ? "Logout" : "Login"}{" "}
-                  </Button>
+                
 
                   <DialogContent className="sm:max-w-[425px] bg-background/95 backdrop-blur-xl border-border/50 mx-4">
                     <DialogHeader>
@@ -291,7 +287,7 @@ const {isAuthenticated}=useAuth()
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                   <StatsCard
                     title="Total Monitors"
-                    value={data.length}
+                    value={websites.length}
                     icon={BarChart3}
                     gradient="from-blue-500 to-blue-600"
                     // trend={{ value: 12, isPositive: true }}
@@ -410,7 +406,6 @@ const {isAuthenticated}=useAuth()
                               key={website.monitorId}
                               className="bg-gradient-to-r from-card/50 to-muted/30 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all duration-300 cursor-pointer"
                               onClick={() =>
-                          
                                 router.push(`/monitor/${website.monitorId}`)
                               }
                             >
@@ -455,9 +450,9 @@ const {isAuthenticated}=useAuth()
                                       <DropdownMenuItem
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                        router.push(
-                                          `/monitor/${website.monitorId}`
-                                        );
+                                          router.push(
+                                            `/monitor/${website.monitorId}`
+                                          );
                                         }}
                                       >
                                         <Eye className="h-4 w-4 mr-2" />
@@ -581,8 +576,7 @@ const {isAuthenticated}=useAuth()
                                 key={website.monitorId}
                                 className="border-border/50 hover:bg-muted/20 transition-colors duration-200 group cursor-pointer"
                                 onClick={() =>
-                                  router.push(`/monitor/${website.monitorId}?website=${website}`)
-
+                                  router.push(`/monitor/${website.monitorId}`)
                                 }
                               >
                                 <TableCell>
@@ -679,9 +673,9 @@ const {isAuthenticated}=useAuth()
                                         className="hover:bg-muted/50"
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                         router.push(
-                                           `/monitor/${website.monitorId}`
-                                         );
+                                          router.push(
+                                            `/monitor/${website.monitorId}`
+                                          );
                                         }}
                                       >
                                         <Eye className="h-4 w-4 mr-2" />

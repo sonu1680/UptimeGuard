@@ -32,38 +32,37 @@ export interface Website {
 
 }
 
-export interface AlertLog {
-  id: string;
-  type: "down" | "up" | "slow" | "warning";
-  message: string;
-  timestamp: string;
-  method: "email" | "sms" | "slack" | "webhook";
-  resolved: boolean;
-  responseTime?: number;
-}
 
-export interface MonitorDetailTYPE {
+
+export interface MonitorDetailView {
   id: string;
-  name: string;
+  monitorId: string;
+  websiteName: string;
   url: string;
-  status: "online" | "offline" | "warning" | "checking";
-  responseTime: number;
-  lastCheck: string;
-  uptime: number;
-  favicon: string;
+  icon: string | null;
+  createAt: string;
   location: string;
-  checkInterval: number;
-  alertMethods: Array<{
-    type: "email" | "sms" | "slack" | "webhook";
-    target: string;
-    enabled: boolean;
+  isPaused: boolean;
+  checkInterval: string;
+  lastCheckAt: Date;
+  status: "UP" | "DOWN";
+  responseTime: string;
+  uptime: string;
+  userId: string;
+  alertLogs: any[];
+  notification: Array<{
+    id: string;
+    emailId: string;
+    telegramId: string;
+    monitorId: string;
   }>;
-  responseHistory: Array<{
-    timestamp: string;
-    responseTime: number;
-    status: "success" | "error" | "timeout";
+  responseLog: Array<{
+    id: string;
+    responseTime: string;
+    responseCode: string;
+    checkAt: string;
+    monitorId: string;
   }>;
-  alertLogs: AlertLog[];
 }
 
 
@@ -77,13 +76,17 @@ export interface SocialButtonProps {
 
 export interface AlertLog {
   id: string;
-  type: "down" | "up" | "slow" | "warning";
-  message: string;
-  timestamp: string;
-  method: "email" | "sms" | "slack" | "webhook";
-  resolved: boolean;
-  responseTime?: number;
+  monitorId: string;
+  sentAt: Date;
+  msg: string;
+  alertType: "EMAIL" | "TELEGRAM" | string; 
+  responseTime: string;
+  responseCode: string;
+  status: "UP" | "DOWN" | string;
+  errorMsg: string;
 }
+
+
 
 export interface AlertLogItemProps {
   alert: AlertLog;
@@ -99,9 +102,12 @@ export interface ResponseTimeChartProps {
 
 export interface ResponseTimeDetailedChartProps {
   data: Array<{
-    timestamp: string;
-    responseTime: number;
-    status: "success" | "error" | "timeout";
+    checkAt: Date|string;
+    responseTime: string;
+    responseCode:string;
+    monitorId:string;
+    id:string
+    status?: "success" | "error" | "timeout"|"UP"|"DOWN";
   }>;
   timeRange: "24h" | "7d" | "30d";
 }
