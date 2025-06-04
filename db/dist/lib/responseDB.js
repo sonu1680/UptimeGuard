@@ -31,7 +31,6 @@ const responseDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
                     lastCheckAt: new Date()
                 },
             }));
-            console.log(lastCheckAts);
         }
     }
 });

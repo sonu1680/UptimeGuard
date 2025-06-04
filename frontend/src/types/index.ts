@@ -1,15 +1,32 @@
 import { LucideIcon } from "lucide-react";
 
+
+ interface responseLog{
+  id:string,
+  responseTime:string,
+  lastCheckAt:Date,
+ monitorId:string
+ }
+ interface alertLog{
+  id:string,
+  msg:string,
+  alertType:string,
+  sentAt:Date
+
+ }
 export interface Website {
-  id: string;
-  name: string;
+  monitorId: string;
+  websiteName: string;
   url: string;
-  status: "online" | "offline" | "warning" | "checking";
-  responseTime: number;
-  lastCheck: string;
-  uptime: number;
-  responseHistory: number[];
-  favicon?: string;
+  createdAt:Date,
+  isPaused:boolean,
+  checkInterval:string,
+  lastCheckAt:Date,
+  responseLogs: responseLog[];
+alertLogs:alertLog[]
+
+  status?: "online" | "offline" | "warning" | "checking";
+
 }
 
 export interface AlertLog {

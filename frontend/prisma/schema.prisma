@@ -23,10 +23,14 @@ model Monitor{
 monitorId String @id @unique @default(uuid())
 websiteName String
 url String
+icon String?
 createAt DateTime @default(now())
 isPaused Boolean? @default(false)
 checkInterval String
 lastCheckAt DateTime @default(now())
+status String
+responseTime String
+uptime String @default("100")
 userId String
 User User @relation(fields: [userId],references: [id],onDelete: Cascade) 
 alertLogs AlertLog[]

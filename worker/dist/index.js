@@ -25,7 +25,7 @@ function main() {
                     yield redisClient.publish(response.batchId, JSON.stringify(response));
                 }
                 catch (error) {
-                    console.error("Error parsing message:", error);
+                    // console.error("Error parsing message:", error);
                 }
             }
             else {

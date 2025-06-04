@@ -55,12 +55,16 @@ import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { StatsCard } from "@/components/stats-card";
 import { WebsiteStatusBadge } from "@/components/website-status-badge";
-import { Website } from "@/types";
+import {  Website } from "@/types";
+import { useAuth } from "@/providers/authProvider";
+import { signOut } from "next-auth/react";
 import { MOCK_WEBSITE } from "@/constant";
+import { useData } from "@/providers/websiteProvider";
 
 
 export default function Dashboard() {
-  const [websites, setWebsites] = useState<Website[]>(MOCK_WEBSITE);
+  const {data,error,loading} = useData();
+  const [websites, setWebsites] = useState<Website[]>();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -68,16 +72,26 @@ export default function Dashboard() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
+    if(!loading){
+      console.log(data)
+      setWebsites(data);
+    }
+
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  }, [data]);
 
-  const filteredWebsites = websites.filter((website) => {
+
+  if(loading){
+    return <p>loading</p>
+  }
+  const filteredWebsites = websites?.filter((website) => {
+    console.log(website,"in filter")
     const matchesSearch =
-      website.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      website.websiteName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       website.url.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus =
       statusFilter === "all" || website.status === statusFilter;
@@ -117,21 +131,24 @@ export default function Dashboard() {
   };
 
   const handleDeleteWebsite = (id: string) => {
-    setWebsites(websites.filter((w) => w.id !== id));
+    setWebsites(websites?.filter((w) => w.monitorId !== id));
   };
 
   const overallStats = {
-    total: websites.length,
-    online: websites.filter((w) => w.status === "online").length,
-    offline: websites.filter((w) => w.status === "offline").length,
-    warning: websites.filter((w) => w.status === "warning").length,
-    avgResponseTime: Math.round(
-      websites
-        .filter((w) => w.responseTime > 0)
-        .reduce((acc, w) => acc + w.responseTime, 0) /
-        websites.filter((w) => w.responseTime > 0).length
-    ),
+    total: websites?.length,
+    online: websites?.filter((w) => w.status === "online").length,
+    offline: websites?.filter((w) => w.status === "offline").length,
+    warning: websites?.filter((w) => w.status === "warning").length,
+    avgResponseTime:20,
+    // avgResponseTime: Math.round(
+    //   websites?
+    //   .filter((w:MonitorDetailTYPE) => parseInt(w.alertLogs[0].responseTime) > 0)
+    //   .reduce((acc, w) => acc + w.responseTime, 0) /
+    //   websites.filter((w) => w.responseTime > 0).length
+    // ),
   };
+
+const {isAuthenticated}=useAuth()
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -189,6 +206,12 @@ export default function Dashboard() {
                       <span className="sm:hidden">Add</span>
                     </Button>
                   </DialogTrigger>
+                  <Button
+                    onClick={async () => await signOut({ callbackUrl: "/" })}
+                  >
+                    {isAuthenticated ? "Logout" : "Login"}{" "}
+                  </Button>
+
                   <DialogContent className="sm:max-w-[425px] bg-background/95 backdrop-blur-xl border-border/50 mx-4">
                     <DialogHeader>
                       <DialogTitle className="flex items-center space-x-2">
@@ -258,28 +281,32 @@ export default function Dashboard() {
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                   <StatsCard
                     title="Total Monitors"
-                    value={overallStats.total}
+                    value={10}
                     icon={BarChart3}
                     gradient="from-blue-500 to-blue-600"
                     trend={{ value: 12, isPositive: true }}
                   />
                   <StatsCard
                     title="Online"
-                    value={overallStats.online}
+                    // value={overallStats.online}
+
+                    value={10}
                     icon={Globe}
                     gradient="from-green-500 to-green-600"
                     trend={{ value: 2.1, isPositive: true }}
                   />
                   <StatsCard
                     title="Issues"
-                    value={overallStats.offline + overallStats.warning}
+                    // value={overallStats.offline + overallStats.warning}
+                    value={10}
                     icon={AlertTriangle}
                     gradient="from-red-500 to-red-600"
                     trend={{ value: 1.2, isPositive: false }}
                   />
                   <StatsCard
                     title="Avg Response"
-                    value={`${overallStats.avgResponseTime}ms`}
+                    // value={`${overallStats.avgResponseTime}ms`}
+                    value={10}
                     icon={Clock}
                     gradient="from-purple-500 to-purple-600"
                     trend={{ value: 5.4, isPositive: false }}
@@ -358,7 +385,7 @@ export default function Dashboard() {
                       <div className="flex items-center space-x-2">
                         <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                         <span className="text-sm sm:text-base">
-                          Monitors ({filteredWebsites.length})
+                          Monitors ({filteredWebsites?.length})
                         </span>
                       </div>
                       <Badge
@@ -374,25 +401,28 @@ export default function Dashboard() {
                     <div className="block sm:hidden">
                       <ScrollArea className="h-[400px]">
                         <div className="space-y-3 p-4">
-                          {filteredWebsites.map((website) => (
+                          {filteredWebsites?.map((website) => (
                             <Card
-                              key={website.id}
+                              key={website.monitorId}
                               className="bg-gradient-to-r from-card/50 to-muted/30 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all duration-300 cursor-pointer"
                               onClick={() =>
-                                window.open(`/monitor/${website.id}`, "_blank")
+                                window.open(
+                                  `/monitor/${website.monitorId}`,
+                                  "_blank"
+                                )
                               }
                             >
                               <CardContent className="p-4">
                                 <div className="flex items-start justify-between mb-3">
                                   <div className="flex items-center space-x-3 flex-1 min-w-0">
                                     <Avatar className="h-10 w-10 border-2 border-primary/20">
-                                      <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-lg">
+                                      {/* <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-lg">
                                         {website.favicon}
-                                      </AvatarFallback>
+                                      </AvatarFallback> */}
                                     </Avatar>
                                     <div className="min-w-0 flex-1">
                                       <div className="font-semibold text-foreground truncate">
-                                        {website.name}
+                                        {website.websiteName}
                                       </div>
                                       <div className="text-sm text-muted-foreground truncate">
                                         {website.url}
@@ -420,7 +450,7 @@ export default function Dashboard() {
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           window.open(
-                                            `/monitor/${website.id}`,
+                                            `/monitor/${website.monitorId}`,
                                             "_blank"
                                           );
                                         }}
@@ -437,7 +467,9 @@ export default function Dashboard() {
                                         className="text-red-600"
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          handleDeleteWebsite(website.id);
+                                          handleDeleteWebsite(
+                                            website.monitorId
+                                          );
                                         }}
                                       >
                                         <Trash2 className="h-4 w-4 mr-2" />
@@ -452,7 +484,8 @@ export default function Dashboard() {
                                       Status
                                     </div>
                                     <WebsiteStatusBadge
-                                      status={website.status}
+                                      // status={website.status}
+                                      status={"online"}
                                     />
                                   </div>
                                   <div>
@@ -460,8 +493,12 @@ export default function Dashboard() {
                                       Response
                                     </div>
                                     <span className="font-mono font-semibold">
-                                      {website.responseTime > 0
-                                        ? `${website.responseTime}ms`
+                                      {parseInt(
+                                        website.checkInterval
+                                      ) > 0
+                                        ? `${parseInt(
+                                            website.checkInterval
+                                          )}ms`
                                         : "—"}
                                     </span>
                                   </div>
@@ -471,19 +508,22 @@ export default function Dashboard() {
                                     </div>
                                     <div className="flex items-center space-x-2">
                                       <span className="font-mono font-semibold">
-                                        {website.uptime}%
+                                        {90}%
                                       </span>
                                       <div className="w-12 h-2 bg-muted/50 rounded-full overflow-hidden">
                                         <div
                                           className={`h-full rounded-full transition-all duration-500 ${
-                                            website.uptime >= 99.5
+                                            parseInt(website.checkInterval) >=
+                                            99.5
                                               ? "bg-gradient-to-r from-green-500 to-green-400"
-                                              : website.uptime >= 95
+                                              : parseInt(
+                                                  website.checkInterval
+                                                ) >= 95
                                               ? "bg-gradient-to-r from-yellow-500 to-yellow-400"
                                               : "bg-gradient-to-r from-red-500 to-red-400"
                                           }`}
                                           style={{
-                                            width: `${website.uptime}%`,
+                                            width: `${website.checkInterval}%`,
                                           }}
                                         />
                                       </div>
@@ -495,7 +535,7 @@ export default function Dashboard() {
                                     </div>
                                     <div className="flex items-center space-x-2">
                                       <span className="text-sm font-medium">
-                                        {formatLastCheck(website.lastCheck)}
+                                        {JSON.stringify(website.lastCheckAt)}
                                       </span>
                                       {website.status === "checking" && (
                                         <RefreshCw className="h-3 w-3 animate-spin text-primary" />
@@ -535,13 +575,13 @@ export default function Dashboard() {
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            {filteredWebsites.map((website) => (
+                            {filteredWebsites?.map((website) => (
                               <TableRow
-                                key={website.id}
+                                key={website.monitorId}
                                 className="border-border/50 hover:bg-muted/20 transition-colors duration-200 group cursor-pointer"
                                 onClick={() =>
                                   window.open(
-                                    `/monitor/${website.id}`,
+                                    `/monitor/${website.monitorId}`,
                                     "_blank"
                                   )
                                 }
@@ -549,13 +589,13 @@ export default function Dashboard() {
                                 <TableCell>
                                   <div className="flex items-center space-x-3">
                                     <Avatar className="h-10 w-10 border-2 border-primary/20">
-                                      <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-lg">
+                                      {/* <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-lg">
                                         {website.favicon}
-                                      </AvatarFallback>
+                                      </AvatarFallback> */}
                                     </Avatar>
                                     <div>
                                       <div className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                                        {website.name}
+                                        {website.websiteName}
                                       </div>
                                       <div className="text-sm text-muted-foreground flex items-center group-hover:text-foreground/70 transition-colors">
                                         {website.url}
@@ -565,13 +605,18 @@ export default function Dashboard() {
                                   </div>
                                 </TableCell>
                                 <TableCell>
-                                  <WebsiteStatusBadge status={website.status} />
+                                  {/* update to change tihe status */}
+                                  <WebsiteStatusBadge status={"online"} />
                                 </TableCell>
                                 <TableCell>
                                   <div className="flex items-center space-x-2">
                                     <span className="font-mono font-semibold">
-                                      {website.responseTime > 0
-                                        ? `${website.responseTime}ms`
+                                      {parseInt(
+                                        website.checkInterval
+                                      ) > 0
+                                        ? `${parseInt(
+                                            website.checkInterval
+                                          )}ms`
                                         : "—"}
                                     </span>
                                   </div>
@@ -579,18 +624,26 @@ export default function Dashboard() {
                                 <TableCell>
                                   <div className="flex items-center space-x-3">
                                     <span className="font-mono font-semibold">
-                                      {website.uptime}%
+                                      {website.checkInterval}%
                                     </span>
                                     <div className="w-20 h-2 bg-muted/50 rounded-full overflow-hidden">
                                       <div
                                         className={`h-full rounded-full transition-all duration-500 ${
-                                          website.uptime >= 99.5
+                                          parseInt(
+                                            website.checkInterval
+                                          ) >= 99.5
                                             ? "bg-gradient-to-r from-green-500 to-green-400"
-                                            : website.uptime >= 95
+                                            : parseInt(
+                                                website.checkInterval
+                                              ) >= 95
                                             ? "bg-gradient-to-r from-yellow-500 to-yellow-400"
                                             : "bg-gradient-to-r from-red-500 to-red-400"
                                         }`}
-                                        style={{ width: `${website.uptime}%` }}
+                                        style={{
+                                          width: `${parseInt(
+                                            website.checkInterval
+                                          )}%`,
+                                        }}
                                       />
                                     </div>
                                   </div>
@@ -598,7 +651,9 @@ export default function Dashboard() {
                                 <TableCell>
                                   <div className="flex items-center space-x-2">
                                     <span className="text-sm font-medium">
-                                      {formatLastCheck(website.lastCheck)}
+                                      {new Date(
+                                        website.lastCheckAt
+                                      ).toISOString()}
                                     </span>
                                     {website.status === "checking" && (
                                       <RefreshCw className="h-3 w-3 animate-spin text-primary" />
@@ -628,7 +683,7 @@ export default function Dashboard() {
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           window.open(
-                                            `/monitor/${website.id}`,
+                                            `/monitor/${website.monitorId}`,
                                             "_blank"
                                           );
                                         }}
@@ -649,7 +704,9 @@ export default function Dashboard() {
                                         className="text-red-600 hover:bg-red-500/10"
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          handleDeleteWebsite(website.id);
+                                          handleDeleteWebsite(
+                                            website.monitorId
+                                          );
                                         }}
                                       >
                                         <Trash2 className="h-4 w-4 mr-2" />
@@ -666,8 +723,6 @@ export default function Dashboard() {
                     </div>
                   </CardContent>
                 </Card>
-
-         
               </main>
             </ScrollArea>
           </SidebarInset>
