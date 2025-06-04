@@ -6,12 +6,10 @@ const MIN_30 = "30";
 const HR_1 = "60";
 const HR_24 = "1440";
 
-
 //testiing purpose only
-const job = new CronJob("*/2 * * * * *", async () => {
-  console.log("runnung at 2 sec")
-  await fetchFromDB("2");
-});
+// const job = new CronJob("*/2 * * * * *", async () => {
+//   await fetchFromDB("2");
+// });
 //-------------------
 const job1 = new CronJob("0 */5 * * * *", async () => {
   await fetchFromDB(MIN_5);
@@ -26,7 +24,7 @@ const job4 = new CronJob("0 0 0 * * *", async () => {
   await fetchFromDB(HR_24);
 });
 
-job.start();
+//job.start();
 
 job1.start();
 job2.start();

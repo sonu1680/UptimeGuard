@@ -3,10 +3,10 @@ import { prisma } from "./prisma";
 import { sendMail } from "./sendMail";
 import { sendToTelegram } from "./sendTelegram";
 import { tryCatchHandler } from "./tryCathHandler";
-const MESSAGE="your site is down plz update it"
+const MESSAGE =
+  "Alert: Your website is currently down. Please investigate as soon as possible.";
 export const alertHandler = async (data: websites) => {
   if (data) {
-    console.log(data,"sonu")
     const alertMode = await tryCatchHandler(() =>
       prisma.notification.findMany({
         where: {
@@ -32,7 +32,7 @@ export const alertHandler = async (data: websites) => {
                 },
               })
             );
-            console.log("alert sent to mail");
+            //console.log("alert sent to mail");
 
         }
      
@@ -54,7 +54,7 @@ export const alertHandler = async (data: websites) => {
              },
            })
          );
-         console.log("alert sent to telegram")
+         //console.log("alert sent to telegram")
        }
       
       }
