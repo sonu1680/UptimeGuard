@@ -1,12 +1,17 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import { prisma } from "./prisma";
+import GitHub from "next-auth/providers/github";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [
     Google({
       clientId: process.env.NEXT_GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.NEXT_GOOGLE_CLIENT_ID_SECRET || "",
+    }),
+    GitHub({
+      clientId: process.env.NEXT_GITHUB_CLIENT_ID || "" ,
+      clientSecret: process.env.NEXT_GITHUB_CLIENT_ID_SECRET || "",
     }),
   ],
 
@@ -26,7 +31,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           data: {
             email: user.email || "",
             name: user.name || "",
-          
           },
         });
       }

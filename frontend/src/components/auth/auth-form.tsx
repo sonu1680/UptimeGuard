@@ -92,12 +92,12 @@ export function AuthForm() {
               <SocialButton
                 icon={Github}
                 provider="GitHub"
-                onClick={() => handleSocialLogin("GitHub")}
+                onClick={() => handleSocialLogin("github")}
                 //@ts-ignore
                 disabled={isLoading}
               />
               <SocialButton
-              //@ts-ignore
+                //@ts-ignore
                 icon={(props) => (
                   <svg viewBox="0 0 24 24" {...props}>
                     <path
