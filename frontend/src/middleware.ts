@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-const secret = process.env.NEXTAUTH_SECRET;
 
 export async function middleware(req: NextRequest) {
+  const secret = process.env.AUTH_SECRET;
   const token = await getToken({ req, secret });
 
   if (!token && req.nextUrl.pathname.startsWith("/dashboard")) {

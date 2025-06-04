@@ -12,9 +12,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
   //-----------------
 
-  pages:{
-signIn:"/auth"
-  },
+  // pages: {
+  //   signIn: "/auth",
+  // },
   callbacks: {
     async signIn({ user, account }) {
       let existingUser = await prisma.user.findFirst({
@@ -26,8 +26,7 @@ signIn:"/auth"
           data: {
             email: user.email || "",
             name: user.name || "",
-            // image: user.image||"",
-            // providers: account.provider,
+          
           },
         });
       }
@@ -43,7 +42,6 @@ signIn:"/auth"
       return token;
     },
     async session({ session, token }) {
-
       if (token?.sub) {
         session.user.id = token.sub;
       }
