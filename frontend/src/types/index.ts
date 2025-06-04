@@ -72,7 +72,13 @@ export interface SocialButtonProps {
   onClick?: () => void;
   className?: string;
 }
-  
+export interface NewWebsite {
+  websiteName: string | null;
+  url: string | null;
+  emailId: string | null;
+  telegramId: string | null;
+  checkInterval: string | null;
+}
 
 export interface AlertLog {
   id: string;

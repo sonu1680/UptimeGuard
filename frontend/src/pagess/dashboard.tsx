@@ -55,11 +55,12 @@ import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { StatsCard } from "@/components/stats-card";
 import { WebsiteStatusBadge } from "@/components/website-status-badge";
-import {  Website } from "@/types";
-import { useAuth } from "@/providers/authProvider";
-import { signOut } from "next-auth/react";
+import {  NewWebsite, Website } from "@/types";
 import { useData } from "@/providers/websiteProvider";
 import { useRouter } from "next/navigation";
+import { INTERVAL_CHECK } from "@/constant";
+import axios from "axios";
+import { toast } from "sonner";
 
 
 export default function Dashboard() {
@@ -68,7 +69,13 @@ export default function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [newWebsite, setNewWebsite] = useState({ name: "", url: "" });
+  const [newWebsite, setNewWebsite] = useState<NewWebsite>({
+    websiteName: null,
+    url: null,
+    emailId: null,
+    telegramId: null,
+    checkInterval: null,
+  });
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
 
@@ -111,24 +118,41 @@ export default function Dashboard() {
     return `${Math.floor(diffInMinutes / 1440)}d ago`;
   };
 
-  const handleAddWebsite = () => {
-    if (newWebsite.name && newWebsite.url) {
-      const website: Website = {
-        id: Date.now().toString(),
-        name: newWebsite.name,
-        url: newWebsite.url,
-        status: "checking",
-        responseTime: 0,
-        lastCheck: new Date().toISOString(),
-        uptime: 100,
-        responseHistory: [],
-        favicon: "🌐",
-      };
-      setWebsites([...websites, website]);
-      setNewWebsite({ name: "", url: "" });
-      setIsAddDialogOpen(false);
+  const handleAddWebsite = async () => {
+    if (
+      !newWebsite.websiteName ||
+      !newWebsite.url ||
+      !newWebsite.checkInterval
+    ) {
+      toast.error("Please enter all required details!");
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/addWebsite`,
+        newWebsite
+      );
+
+      if (res.status === 201) {
+        toast.success(`Website ${newWebsite.websiteName} added successfully.`);
+        setNewWebsite({
+          websiteName: null,
+          url: null,
+          checkInterval: null,
+          emailId: null,
+          telegramId: null,
+        });
+        setIsAddDialogOpen(false);
+      } else {
+        toast.error("Failed to add website. Please try again.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+      console.error("Add website error:", error);
     }
   };
+  
 
   const handleDeleteWebsite = (id: string) => {
     setWebsites(websites?.filter((w) => w.monitorId !== id));
@@ -158,7 +182,6 @@ export default function Dashboard() {
   };
   
 
-const {isAuthenticated}=useAuth()
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -216,7 +239,6 @@ const {isAuthenticated}=useAuth()
                       <span className="sm:hidden">Add</span>
                     </Button>
                   </DialogTrigger>
-                
 
                   <DialogContent className="sm:max-w-[425px] bg-background/95 backdrop-blur-xl border-border/50 mx-4">
                     <DialogHeader>
@@ -225,8 +247,7 @@ const {isAuthenticated}=useAuth()
                         <span>Add New Monitor</span>
                       </DialogTitle>
                       <DialogDescription>
-                        Add a new website or API endpoint to monitor for uptime
-                        and performance.
+                        Add a new website to monitor for uptime and performance.
                       </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
@@ -237,11 +258,11 @@ const {isAuthenticated}=useAuth()
                         <Input
                           id="name"
                           placeholder="My Website"
-                          value={newWebsite.name}
+                          value={newWebsite.websiteName||""}
                           onChange={(e) =>
                             setNewWebsite({
                               ...newWebsite,
-                              name: e.target.value,
+                              websiteName: e.target.value,
                             })
                           }
                           className="bg-muted/50 border-border/50 focus:border-primary/50"
@@ -254,7 +275,7 @@ const {isAuthenticated}=useAuth()
                         <Input
                           id="url"
                           placeholder="https://example.com"
-                          value={newWebsite.url}
+                          value={newWebsite.url||""}
                           onChange={(e) =>
                             setNewWebsite({
                               ...newWebsite,
@@ -263,6 +284,73 @@ const {isAuthenticated}=useAuth()
                           }
                           className="bg-muted/50 border-border/50 focus:border-primary/50"
                         />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="url" className="text-sm font-medium">
+                          Alert Email ID{" "}
+                          <span className="text-xs font-extralight ">
+                            (optional)
+                          </span>
+                        </Label>
+                        <Input
+                          id="email"
+                          placeholder="example@xyz.com"
+                          value={newWebsite.emailId||""}
+                          onChange={(e) =>
+                            setNewWebsite({
+                              ...newWebsite,
+                              emailId: e.target.value,
+                            })
+                          }
+                          className="bg-muted/50 border-border/50 focus:border-primary/50"
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="url" className="text-sm font-medium">
+                          Alert Telegram ID{" "}
+                          <span className="text-xs font-extralight ">
+                            (optional)
+                          </span>
+                        </Label>
+                        <Input
+                          id="telegram"
+                          placeholder="example@xyz.com"
+                          value={newWebsite.telegramId||""}
+                          onChange={(e) =>
+                            setNewWebsite({
+                              ...newWebsite,
+                              telegramId: e.target.value,
+                            })
+                          }
+                          className="bg-muted/50 border-border/50 focus:border-primary/50"
+                        />
+                      </div>
+
+                      <div className="grid gap-2">
+                        <Label htmlFor="url" className="text-sm font-medium">
+                          Select Interval
+                        </Label>
+
+                        <div className="w flex w-full space-x-4 ">
+                          {INTERVAL_CHECK.map((item) => (
+                            <Button
+                              key={item.value}
+                              variant={
+                                newWebsite.checkInterval === item.value
+                                  ? "default"
+                                  : "outline"
+                              }
+                              onClick={() =>
+                                setNewWebsite({
+                                  ...newWebsite,
+                                  checkInterval: item.value,
+                                })
+                              }
+                            >
+                              {item.label}
+                            </Button>
+                          ))}
+                        </div>
                       </div>
                     </div>
                     <DialogFooter>

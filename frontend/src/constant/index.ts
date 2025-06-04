@@ -12,7 +12,13 @@ import {
 } from "lucide-react";
 
 
-
+export const INTERVAL_CHECK = [
+  { label: "1 Min", value: "1" },
+  { label: "5 Min", value: "5" },
+  { label: "30 Min", value: "30" },
+  { label: "1 Hr", value: "60" },
+  { label: "1 D", value: "1440" },
+];
 export const COMPANIES = [
   "Acme Corp",
   "TechFlow",

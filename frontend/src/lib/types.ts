@@ -5,7 +5,7 @@ export type MonitorApi = {
   telegramId?:string
   checkInterval: string;
   url: string;
-  userId: string;
+  userId?: string;
 };
 
 
