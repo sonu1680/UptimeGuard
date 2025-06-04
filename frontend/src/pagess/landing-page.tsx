@@ -7,12 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Activity,
-  Shield,
-  Zap,
-  Globe,
-  BarChart3,
-  Clock,
-  Users,
+
   ArrowRight,
   CheckCircle,
   Star,
@@ -23,6 +18,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Navbar from "@/components/navbar";
+import { COMPANIES, FEATURES, INTEGRATION, STATS, TESTIMONIALS } from "@/constant";
 
 export default function UptimeMonitorLanding() {
   const [email, setEmail] = useState("");
@@ -39,116 +35,14 @@ export default function UptimeMonitorLanding() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+      setCurrentTestimonial((prev) => (prev + 1) % TESTIMONIALS.length);
     }, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  const companies = [
-    "Acme Corp",
-    "TechFlow",
-    "DataSync",
-    "CloudBase",
-    "DevTools",
-    "AppStack",
-    "WebCore",
-    "SysOps",
-  ];
 
-  const features = [
-    {
-      icon: Activity,
-      title: "Real-time Monitoring",
-      description:
-        "Monitor your websites and APIs 24/7 with sub-second precision and instant notifications when issues arise.",
-      gradient: "from-purple-500 to-pink-500",
-      stats: "99.9% accuracy",
-    },
-    {
-      icon: Shield,
-      title: "Enterprise Security",
-      description:
-        "Bank-grade security with SOC2 compliance, encrypted data transmission, and secure monitoring infrastructure.",
-      gradient: "from-blue-500 to-cyan-500",
-      stats: "SOC2 certified",
-    },
-    {
-      icon: Zap,
-      title: "Lightning Alerts",
-      description:
-        "Multi-channel notifications via email, SMS, Slack, Discord, Teams, and 50+ other integrations.",
-      gradient: "from-yellow-500 to-orange-500",
-      stats: "<30s response",
-    },
-    {
-      icon: Globe,
-      title: "Global Network",
-      description:
-        "Monitor from 15+ locations worldwide with intelligent routing, failover detection, and regional insights.",
-      gradient: "from-green-500 to-emerald-500",
-      stats: "15+ locations",
-    },
-  ];
 
-  const stats = [
-    {
-      icon: BarChart3,
-      value: "99.99%",
-      label: "Uptime Guaranteed",
-      color: "text-green-500",
-    },
-    {
-      icon: Clock,
-      value: "<30s",
-      label: "Alert Response",
-      color: "text-blue-500",
-    },
-    {
-      icon: Users,
-      value: "10K+",
-      label: "Happy Customers",
-      color: "text-purple-500",
-    },
-    {
-      icon: Globe,
-      value: "15+",
-      label: "Global Locations",
-      color: "text-orange-500",
-    },
-  ];
 
-  const testimonials = [
-    {
-      name: "Sarah Chen",
-      role: "CTO at TechFlow",
-      content:
-        "UptimeGuard helped us achieve 99.99% uptime. The alerts are instant and the dashboard is incredibly intuitive.",
-      avatar: "/placeholder.svg?height=40&width=40",
-    },
-    {
-      name: "Marcus Rodriguez",
-      role: "DevOps Lead at DataSync",
-      content:
-        "Best monitoring solution we've used. The global monitoring network caught issues our previous tool missed.",
-      avatar: "/placeholder.svg?height=40&width=40",
-    },
-    {
-      name: "Emily Watson",
-      role: "Engineering Manager at CloudBase",
-      content:
-        "The AI-powered insights have been game-changing. We now prevent outages before they happen.",
-      avatar: "/placeholder.svg?height=40&width=40",
-    },
-  ];
-
-  const integrations = [
-    { name: "Slack", icon: "💬" },
-    { name: "Discord", icon: "🎮" },
-    { name: "Teams", icon: "👥" },
-    { name: "PagerDuty", icon: "📟" },
-    { name: "Webhook", icon: "🔗" },
-    { name: "Email", icon: "📧" },
-  ];
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden relative transition-colors duration-300">
@@ -245,7 +139,7 @@ export default function UptimeMonitorLanding() {
         <section className="px-4 py-12 sm:py-16">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-              {stats.map((stat, index) => (
+              {STATS.map((stat, index) => (
                 <div key={index} className="text-center group">
                   <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-muted/50 to-muted/30 backdrop-blur-sm border border-border rounded-xl sm:rounded-2xl mb-3 sm:mb-4 group-hover:border-primary/50 group-hover:scale-110 transition-all duration-300">
                     <stat.icon
@@ -271,9 +165,9 @@ export default function UptimeMonitorLanding() {
               Trusted by engineering teams at leading companies worldwide
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 sm:gap-6 lg:gap-8 items-center">
-              {companies.map((company, index) => (
+              {COMPANIES.map((company, index) => (
                 <div key={index} className="text-center group cursor-pointer">
-                  <div className="text-muted-foreground font-medium text-xs sm:text-sm group-hover:text-foreground transition-colors duration-300 p-3 sm:p-4 rounded-lg group-hover:bg-muted/50 group-hover:scale-105 transition-all duration-300">
+                  <div className="text-muted-foreground font-medium text-xs sm:text-sm group-hover:text-foreground  p-3 sm:p-4 rounded-lg group-hover:bg-muted/50 group-hover:scale-105 transition-all duration-300">
                     {company}
                   </div>
                 </div>
@@ -310,7 +204,7 @@ export default function UptimeMonitorLanding() {
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-              {features.map((feature, index) => (
+              {FEATURES.map((feature, index) => (
                 <Card
                   key={index}
                   className="bg-gradient-to-br from-card/50 to-muted/30 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-500 group hover:scale-105 hover:shadow-2xl hover:shadow-primary/10"
@@ -367,23 +261,23 @@ export default function UptimeMonitorLanding() {
                   ))}
                 </div>
                 <blockquote className="text-lg sm:text-xl lg:text-2xl font-medium text-foreground mb-4 sm:mb-6 leading-relaxed">
-                  "{testimonials[currentTestimonial].content}"
+                  "{TESTIMONIALS[currentTestimonial].content}"
                 </blockquote>
                 <div className="flex items-center justify-center space-x-3 sm:space-x-4">
                   <img
                     src={
-                      testimonials[currentTestimonial].avatar ||
+                      TESTIMONIALS[currentTestimonial].avatar ||
                       "/placeholder.svg"
                     }
-                    alt={testimonials[currentTestimonial].name}
+                    alt={TESTIMONIALS[currentTestimonial].name}
                     className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-primary/20"
                   />
                   <div className="text-left">
                     <div className="font-semibold text-foreground text-sm sm:text-base">
-                      {testimonials[currentTestimonial].name}
+                      {TESTIMONIALS[currentTestimonial].name}
                     </div>
                     <div className="text-xs sm:text-sm text-muted-foreground">
-                      {testimonials[currentTestimonial].role}
+                      {TESTIMONIALS[currentTestimonial].role}
                     </div>
                   </div>
                 </div>
@@ -391,7 +285,7 @@ export default function UptimeMonitorLanding() {
             </Card>
 
             <div className="flex justify-center space-x-2 mt-6 sm:mt-8">
-              {testimonials.map((_, index) => (
+              {TESTIMONIALS.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentTestimonial(index)}
@@ -424,7 +318,7 @@ export default function UptimeMonitorLanding() {
             </p>
 
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 sm:gap-6">
-              {integrations.map((integration, index) => (
+              {INTEGRATION.map((integration, index) => (
                 <Card
                   key={index}
                   className="bg-gradient-to-br from-card/50 to-muted/30 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-300 group hover:scale-110 cursor-pointer"
@@ -725,7 +619,7 @@ export default function UptimeMonitorLanding() {
           </div>
           <div className="flex flex-col sm:flex-row justify-between items-center pt-6 sm:pt-8 border-t border-border space-y-4 sm:space-y-0">
             <div className="text-xs sm:text-sm text-muted-foreground">
-              © 2024 UptimeGuard. All rights reserved.
+              © 2025 UptimeGuard. All rights reserved.
             </div>
             <div className="flex flex-wrap justify-center sm:justify-end space-x-4 sm:space-x-6 text-xs sm:text-sm text-muted-foreground">
               <Link

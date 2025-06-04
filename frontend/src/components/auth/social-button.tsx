@@ -1,14 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import type { LucideIcon } from "lucide-react";
+import { SocialButtonProps } from "@/types";
 
-interface SocialButtonProps {
-  icon: LucideIcon;
-  provider: string;
-  onClick?: () => void;
-  className?: string;
-}
 
 export function SocialButton({
   icon: Icon,

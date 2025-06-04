@@ -1,20 +1,8 @@
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
+import { AlertLogItemProps } from "@/types"
 import { AlertTriangle, CheckCircle, Clock, Mail, MessageSquare, Smartphone } from "lucide-react"
 
-interface AlertLog {
-  id: string
-  type: "down" | "up" | "slow" | "warning"
-  message: string
-  timestamp: string
-  method: "email" | "sms" | "slack" | "webhook"
-  resolved: boolean
-  responseTime?: number
-}
-
-interface AlertLogItemProps {
-  alert: AlertLog
-}
 
 export function AlertLogItem({ alert }: AlertLogItemProps) {
   const getAlertIcon = () => {

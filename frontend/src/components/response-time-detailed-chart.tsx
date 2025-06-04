@@ -3,15 +3,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { TrendingUp, TrendingDown, Minus } from "lucide-react"
+import { ResponseTimeDetailedChartProps } from "@/types"
 
-interface ResponseTimeDetailedChartProps {
-  data: Array<{
-    timestamp: string
-    responseTime: number
-    status: "success" | "error" | "timeout"
-  }>
-  timeRange: "24h" | "7d" | "30d"
-}
 
 export function ResponseTimeDetailedChart({ data, timeRange }: ResponseTimeDetailedChartProps) {
   const maxValue = Math.max(...data.map((d) => d.responseTime))

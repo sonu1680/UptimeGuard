@@ -1,13 +1,9 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ResponseTimeChartProps } from "@/types"
 import { TrendingUp, TrendingDown, Minus } from "lucide-react"
 
-interface ResponseTimeChartProps {
-  data: number[]
-  siteName: string
-  status: "online" | "offline" | "warning" | "checking"
-}
 
 export function ResponseTimeChart({ data, siteName, status }: ResponseTimeChartProps) {
   const maxValue = Math.max(...data)

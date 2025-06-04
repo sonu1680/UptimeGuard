@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,123 +29,15 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { ResponseTimeDetailedChart } from "@/components/response-time-detailed-chart";
 import { AlertLogItem } from "@/components/alert-log-item";
+import { MonitorDetailTYPE } from "@/types";
+import { MOCK_MONITOR_DETAILS } from "@/constant";
 
-interface AlertLog {
-  id: string;
-  type: "down" | "up" | "slow" | "warning";
-  message: string;
-  timestamp: string;
-  method: "email" | "sms" | "slack" | "webhook";
-  resolved: boolean;
-  responseTime?: number;
-}
 
-interface MonitorDetail {
-  id: string;
-  name: string;
-  url: string;
-  status: "online" | "offline" | "warning" | "checking";
-  responseTime: number;
-  lastCheck: string;
-  uptime: number;
-  favicon: string;
-  location: string;
-  checkInterval: number;
-  alertMethods: Array<{
-    type: "email" | "sms" | "slack" | "webhook";
-    target: string;
-    enabled: boolean;
-  }>;
-  responseHistory: Array<{
-    timestamp: string;
-    responseTime: number;
-    status: "success" | "error" | "timeout";
-  }>;
-  alertLogs: AlertLog[];
-}
 
-// Mock data for the monitor detail
-const mockMonitorDetail: MonitorDetail = {
-  id: "1",
-  name: "Company Website",
-  url: "https://company.com",
-  status: "online",
-  responseTime: 245,
-  lastCheck: "2024-01-15T10:30:00Z",
-  uptime: 99.98,
-  favicon: "🌐",
-  location: "New York, US",
-  checkInterval: 60,
-  alertMethods: [
-    { type: "email", target: "admin@company.com", enabled: true },
-    { type: "slack", target: "#alerts", enabled: true },
-    { type: "sms", target: "+1234567890", enabled: false },
-    {
-      type: "webhook",
-      target: "https://hooks.company.com/alerts",
-      enabled: true,
-    },
-  ],
-  responseHistory: Array.from({ length: 48 }, (_, i) => ({
-    timestamp: new Date(Date.now() - (47 - i) * 30 * 60 * 1000).toISOString(),
-    responseTime: Math.floor(Math.random() * 300) + 150,
-    status:
-      Math.random() > 0.95
-        ? Math.random() > 0.5
-          ? "error"
-          : "timeout"
-        : ("success" as "success" | "error" | "timeout"),
-  })),
-  alertLogs: [
-    {
-      id: "1",
-      type: "down",
-      message: "Website is down - Connection timeout",
-      timestamp: "2024-01-15T08:15:00Z",
-      method: "email",
-      resolved: true,
-      responseTime: 0,
-    },
-    {
-      id: "2",
-      type: "up",
-      message: "Website is back online",
-      timestamp: "2024-01-15T08:18:00Z",
-      method: "slack",
-      resolved: true,
-      responseTime: 234,
-    },
-    {
-      id: "3",
-      type: "slow",
-      message: "Response time is slower than usual",
-      timestamp: "2024-01-15T06:45:00Z",
-      method: "email",
-      resolved: true,
-      responseTime: 2340,
-    },
-    {
-      id: "4",
-      type: "warning",
-      message: "SSL certificate expires in 30 days",
-      timestamp: "2024-01-14T12:00:00Z",
-      method: "webhook",
-      resolved: false,
-    },
-    {
-      id: "5",
-      type: "up",
-      message: "Website recovered from maintenance",
-      timestamp: "2024-01-14T09:30:00Z",
-      method: "slack",
-      resolved: true,
-      responseTime: 189,
-    },
-  ],
-};
+
 
 export default function MonitorDetail() {
-  const [monitor] = useState<MonitorDetail>(mockMonitorDetail);
+  const [monitor] = useState<MonitorDetailTYPE>(MOCK_MONITOR_DETAILS);
   const [timeRange, setTimeRange] = useState<"24h" | "7d" | "30d">("24h");
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
