@@ -49,6 +49,7 @@ import {
   Sparkles,
   TrendingUp,
   Eye,
+  Loader,
 } from "lucide-react";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
@@ -61,11 +62,11 @@ import { useRouter } from "next/navigation";
 import { INTERVAL_CHECK } from "@/constant";
 import axios from "axios";
 import { toast } from "sonner";
-import { tryCatchHandler } from "@/lib/tryCatchHandler";
 
 
 export default function Dashboard() {
   const { data, loading }: { data: Website[],loading:boolean } = useData();
+  const [isLoading,setIsLoading]=useState<boolean>(false)
   const [websites, setWebsites] = useState<Website[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -120,6 +121,7 @@ export default function Dashboard() {
   };
 
   const handleAddWebsite = async () => {
+    setIsLoading(true);
     if (
       !newWebsite.websiteName ||
       !newWebsite.url ||
@@ -144,19 +146,23 @@ export default function Dashboard() {
           emailId: null,
           telegramId: null,
         });
+        setIsLoading(false)
         setIsAddDialogOpen(false);
       } else {
         toast.error("Failed to add website. Please try again.");
+        setIsLoading(false)
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
-      console.error("Add website error:", error);
+      setIsLoading(false);
+
     }
   };
   
 
   const handleDeleteWebsite = async(id: string) => {
-    
+    setIsLoading(true);
+
 try {
   const res = await axios.delete(
     `${process.env.NEXT_PUBLIC_BASE_URL}/deleteSite?id=${id}`
@@ -164,8 +170,12 @@ try {
   
   toast.success("website deleted!")
   setWebsites(websites?.filter((w) => w.monitorId !== id));
+  setIsLoading(false);
+
 } catch (error) {
   toast.success("Something went wrong!");
+  setIsLoading(false);
+
 
 }
   };
@@ -326,12 +336,15 @@ try {
                           <span className="text-xs font-extralight">
                             (optional) —
                             <a
-                              href="https://t.me/uotimemonitorsonubot"
+                              href="https://t.me/UptimeGuartbot"
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-500 underline hover:text-blue-600 ml-1"
                             >
-                              <span className="text-xs font-bold " > Get your chat ID</span>
+                              <span className="text-xs font-bold ">
+                                {" "}
+                                Get your chat ID
+                              </span>
                             </a>
                           </span>
                         </Label>
@@ -380,10 +393,20 @@ try {
                       <Button
                         type="submit"
                         onClick={handleAddWebsite}
-                        className="bg-gradient-to-r from-primary to-primary/80"
+                        className="bg-gradient-to-r from-primary to-primary/80 flex items-center"
+                        disabled={isLoading}
                       >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Monitor
+                        {isLoading ? (
+                          <>
+                            <Loader className="h-4 w-4 mr-2 animate-spin" />
+                            Adding...
+                          </>
+                        ) : (
+                          <>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Monitor
+                          </>
+                        )}
                       </Button>
                     </DialogFooter>
                   </DialogContent>

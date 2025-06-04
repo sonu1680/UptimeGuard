@@ -29,10 +29,10 @@ import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { ResponseTimeDetailedChart } from "@/components/response-time-detailed-chart";
 import { AlertLogItem } from "@/components/alert-log-item";
 import {  MonitorDetailView } from "@/types";
-import { MOCK_MONITOR_DETAILS } from "@/constant";
 import { useParams } from "next/navigation";
 import { useData } from "@/providers/websiteProvider";
 import axios from "axios";
+import { toast } from "sonner";
 
 
 export default function MonitorDetail() {
@@ -149,14 +149,7 @@ if(!monitor){
                   className="text-xs"
                 />
                 <ThemeToggle />
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="bg-background/50 border-border/50 hidden sm:flex"
-                >
-                  <Settings className="h-4 w-4 mr-2" />
-                  Configure
-                </Button>
+
                 <Button
                   size="sm"
                   variant="outline"
@@ -199,7 +192,9 @@ if(!monitor){
                       <div className="text-lg sm:text-2xl font-bold">
                         {monitor.responseTime}ms
                       </div>
-                      <p className="text-xs text-muted-foreground">Last check</p>
+                      <p className="text-xs text-muted-foreground">
+                        Last check
+                      </p>
                     </CardContent>
                   </Card>
 
@@ -226,8 +221,13 @@ if(!monitor){
                     </CardHeader>
                     <CardContent className="p-3 sm:p-4 pt-0">
                       <div className="text-lg sm:text-2xl font-bold">
-                        {monitor.checkInterval} MIN
+                        {parseInt(monitor.checkInterval) < 60
+                          ? `${monitor.checkInterval} Min`
+                          : parseInt(monitor.checkInterval) < 1440
+                          ? "1 Hr"
+                          : "1 D"}
                       </div>
+
                       <p className="text-xs text-muted-foreground">
                         {monitor.location || "India"}
                       </p>
@@ -330,6 +330,7 @@ if(!monitor){
                         Alert Methods
                       </h2>
                       <Button
+                        onClick={() => toast("comming soon!")}
                         size="sm"
                         className="bg-gradient-to-r from-primary to-primary/80 w-full sm:w-auto"
                       >
@@ -337,57 +338,60 @@ if(!monitor){
                         Add Method
                       </Button>
                     </div>
-
                     <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
-                      {["email","telegram"].map((method, index) => (
-                        <Card
-                          key={index}
-                          className="bg-gradient-to-br from-card/50 to-muted/30 backdrop-blur-sm border-border/50"
-                        >
-                          <CardHeader className="pb-3 p-4 sm:p-6">
-                            <CardTitle className="flex items-center justify-between text-sm sm:text-base">
-                              <div className="flex items-center space-x-2">
-                                {getMethodIcon(method)}
-                                <span className="capitalize">
-                                  {method}
-                                </span>
+                      {["emailId", "telegramId"].map((method, index) => {
+                        const methodValue =
+                          monitor?.notification?.[0]?.[
+                            method as "emailId" | "telegramId"
+                          ];
+
+                        return (
+                          <Card
+                            key={index}
+                            className="bg-gradient-to-br from-card/50 to-muted/30 backdrop-blur-sm border-border/50"
+                          >
+                            <CardHeader className="pb-3 p-4 sm:p-6">
+                              <CardTitle className="flex items-center justify-between text-sm sm:text-base">
+                                <div className="flex items-center space-x-2">
+                                  {getMethodIcon(method)}
+                                  <span className="capitalize">{method}</span>
+                                </div>
+                                <Badge
+                                  className={`text-xs ${
+                                    methodValue
+                                      ? "bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30"
+                                      : "bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30"
+                                  }`}
+                                >
+                                  {methodValue ? "Enabled" : "Disabled"}
+                                </Badge>
+                              </CardTitle>
+                            </CardHeader>
+
+                            {/* <CardContent className="p-4 sm:p-6 pt-0">
+                              <div className="text-sm text-muted-foreground mb-3 truncate">
+                                {methodValue || "Not configured"}
                               </div>
-                              <Badge
-                                className={`text-xs ${
-                                  // method.enabled
-                                  true
-                                    ? "bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30"
-                                    : "bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30"
-                                }`}
-                              >
-                                {/* {method.enabled ? "Enabled" : "Disabled"} */}
-                                Enabled
-                              </Badge>
-                            </CardTitle>
-                          </CardHeader>
-                          {/* <CardContent className="p-4 sm:p-6 pt-0">
-                            <div className="text-sm text-muted-foreground mb-3 truncate">
-                              {method.target}
-                            </div>
-                            <div className="flex space-x-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="flex-1 text-xs"
-                              >
-                                Edit
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="flex-1 text-xs"
-                              >
-                                Test
-                              </Button>
-                            </div>
-                          </CardContent> */}
-                        </Card>
-                      ))}
+                              <div className="flex space-x-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="flex-1 text-xs"
+                                >
+                                  Edit
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="flex-1 text-xs"
+                                >
+                                  Test
+                                </Button>
+                              </div>
+                            </CardContent> */}
+                          </Card>
+                        );
+                      })}
                     </div>
                   </TabsContent>
                 </Tabs>
