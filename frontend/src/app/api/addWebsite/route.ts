@@ -13,7 +13,6 @@ export async function POST(req: Request) {
     emailId,
     telegramId,
   }: MonitorApi = data;
-
   const res = await tryCatchHandler(() =>
     prisma.monitor.create({
       data: {
@@ -21,11 +20,11 @@ export async function POST(req: Request) {
         websiteName,
         url,
         checkInterval,
-        
+
         notification: {
           create: {
-            emailId:emailId,
-            telegramId:telegramId
+            emailId: emailId,
+            telegramId: telegramId,
           },
         },
       },

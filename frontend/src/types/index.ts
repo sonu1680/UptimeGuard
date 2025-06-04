@@ -23,9 +23,12 @@ export interface Website {
   checkInterval:string,
   lastCheckAt:Date,
   responseLogs: responseLog[];
-alertLogs:alertLog[]
-
-  status?: "online" | "offline" | "warning" | "checking";
+  alertLogs:alertLog[]
+  responseTime:string
+  uptime:string
+  icon?:string
+  
+  status?: "UP" | "DOWN" | "warning" | "checking";
 
 }
 
@@ -116,6 +119,6 @@ export interface StatsCardProps {
   
 
 export interface WebsiteStatusBadgeProps {
-  status: "online" | "offline" | "warning" | "checking";
+  status: "online" | "offline" | "warning" | "checking"|"UP"|"DOWN";
   className?: string;
 }

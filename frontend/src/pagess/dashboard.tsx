@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Table,
   TableBody,
@@ -58,8 +58,8 @@ import { WebsiteStatusBadge } from "@/components/website-status-badge";
 import {  Website } from "@/types";
 import { useAuth } from "@/providers/authProvider";
 import { signOut } from "next-auth/react";
-import { MOCK_WEBSITE } from "@/constant";
 import { useData } from "@/providers/websiteProvider";
+import { useRouter } from "next/navigation";
 
 
 export default function Dashboard() {
@@ -71,9 +71,10 @@ export default function Dashboard() {
   const [newWebsite, setNewWebsite] = useState({ name: "", url: "" });
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
+
+  const router=useRouter()
   useEffect(() => {
     if(!loading){
-      console.log(data)
       setWebsites(data);
     }
 
@@ -89,7 +90,6 @@ export default function Dashboard() {
     return <p>loading</p>
   }
   const filteredWebsites = websites?.filter((website) => {
-    console.log(website,"in filter")
     const matchesSearch =
       website.websiteName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       website.url.toLowerCase().includes(searchTerm.toLowerCase());
@@ -98,7 +98,7 @@ export default function Dashboard() {
     return matchesSearch && matchesStatus;
   });
 
-  const formatLastCheck = (timestamp: string) => {
+  const formatLastCheck = (timestamp: Date) => {
     const date = new Date(timestamp);
     const now = new Date();
     const diffInMinutes = Math.floor(
@@ -134,19 +134,29 @@ export default function Dashboard() {
     setWebsites(websites?.filter((w) => w.monitorId !== id));
   };
 
+  const validWebsites =
+    websites?.filter(
+      (w: any) => w.responseTime && parseInt(w.responseTime) > 0
+    ) || [];
+
+  const avgResponseTime =
+    validWebsites.length > 0
+      ? Math.round(
+          validWebsites.reduce(
+            (acc: number, w: any) => acc + parseInt(w.responseTime),
+            0
+          ) / validWebsites.length
+        )
+      : 0;
+
   const overallStats = {
-    total: websites?.length,
-    online: websites?.filter((w) => w.status === "online").length,
-    offline: websites?.filter((w) => w.status === "offline").length,
-    warning: websites?.filter((w) => w.status === "warning").length,
-    avgResponseTime:20,
-    // avgResponseTime: Math.round(
-    //   websites?
-    //   .filter((w:MonitorDetailTYPE) => parseInt(w.alertLogs[0].responseTime) > 0)
-    //   .reduce((acc, w) => acc + w.responseTime, 0) /
-    //   websites.filter((w) => w.responseTime > 0).length
-    // ),
+    total: websites?.length || 0,
+    online: websites?.filter((w) => w.status === "UP").length || 0,
+    offline: websites?.filter((w) => w.status === "DOWN").length || 0,
+    // warning: websites?.filter((w) => parseInt(w.responseTime) >= 100).length || 0,
+    avgResponseTime,
   };
+  
 
 const {isAuthenticated}=useAuth()
 
@@ -175,7 +185,7 @@ const {isAuthenticated}=useAuth()
                   </div>
                   <div className="min-w-0">
                     <h1 className="text-base sm:text-lg font-bold bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent truncate">
-                      Website Monitors
+                      Your Websites
                     </h1>
                     <p className="text-xs text-muted-foreground hidden sm:block">
                       Real-time monitoring dashboard
@@ -281,35 +291,33 @@ const {isAuthenticated}=useAuth()
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                   <StatsCard
                     title="Total Monitors"
-                    value={10}
+                    value={data.length}
                     icon={BarChart3}
                     gradient="from-blue-500 to-blue-600"
-                    trend={{ value: 12, isPositive: true }}
+                    // trend={{ value: 12, isPositive: true }}
                   />
                   <StatsCard
                     title="Online"
-                    // value={overallStats.online}
-
-                    value={10}
+                    value={overallStats.online || "0"}
+                    // value={10}
                     icon={Globe}
                     gradient="from-green-500 to-green-600"
-                    trend={{ value: 2.1, isPositive: true }}
+                    //trend={{ value: 2.1, isPositive: true }}
                   />
                   <StatsCard
-                    title="Issues"
-                    // value={overallStats.offline + overallStats.warning}
-                    value={10}
+                    title="Offline"
+                    value={overallStats.offline || 0}
                     icon={AlertTriangle}
                     gradient="from-red-500 to-red-600"
-                    trend={{ value: 1.2, isPositive: false }}
+                    //trend={{ value: 1.2, isPositive: false }}
                   />
                   <StatsCard
                     title="Avg Response"
-                    // value={`${overallStats.avgResponseTime}ms`}
-                    value={10}
+                    value={`${overallStats.avgResponseTime}ms`}
+                    //value={10}
                     icon={Clock}
                     gradient="from-purple-500 to-purple-600"
-                    trend={{ value: 5.4, isPositive: false }}
+                    //trend={{ value: 5.4, isPositive: false }}
                   />
                 </div>
 
@@ -353,20 +361,16 @@ const {isAuthenticated}=useAuth()
                             All Statuses
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => setStatusFilter("online")}
+                            onClick={() => setStatusFilter("DOWN")}
                           >
-                            Online
+                            DOWN
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => setStatusFilter("offline")}
+                            onClick={() => setStatusFilter("UP")}
                           >
-                            Offline
+                            UP
                           </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => setStatusFilter("warning")}
-                          >
-                            Warning
-                          </DropdownMenuItem>
+
                           <DropdownMenuItem
                             onClick={() => setStatusFilter("checking")}
                           >
@@ -406,20 +410,22 @@ const {isAuthenticated}=useAuth()
                               key={website.monitorId}
                               className="bg-gradient-to-r from-card/50 to-muted/30 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all duration-300 cursor-pointer"
                               onClick={() =>
-                                window.open(
-                                  `/monitor/${website.monitorId}`,
-                                  "_blank"
-                                )
+                          
+                                router.push(`/monitor/${website.monitorId}`)
                               }
                             >
                               <CardContent className="p-4">
                                 <div className="flex items-start justify-between mb-3">
                                   <div className="flex items-center space-x-3 flex-1 min-w-0">
                                     <Avatar className="h-10 w-10 border-2 border-primary/20">
-                                      {/* <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-lg">
-                                        {website.favicon}
-                                      </AvatarFallback> */}
+                                      <AvatarImage src={website.icon} />
+                                      <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-lg">
+                                        {website.websiteName
+                                          .charAt(0)
+                                          .toUpperCase()}
+                                      </AvatarFallback>
                                     </Avatar>
+
                                     <div className="min-w-0 flex-1">
                                       <div className="font-semibold text-foreground truncate">
                                         {website.websiteName}
@@ -449,10 +455,9 @@ const {isAuthenticated}=useAuth()
                                       <DropdownMenuItem
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          window.open(
-                                            `/monitor/${website.monitorId}`,
-                                            "_blank"
-                                          );
+                                        router.push(
+                                          `/monitor/${website.monitorId}`
+                                        );
                                         }}
                                       >
                                         <Eye className="h-4 w-4 mr-2" />
@@ -484,8 +489,11 @@ const {isAuthenticated}=useAuth()
                                       Status
                                     </div>
                                     <WebsiteStatusBadge
-                                      // status={website.status}
-                                      status={"online"}
+                                      status={
+                                        website.status == "UP"
+                                          ? "online"
+                                          : "offline"
+                                      }
                                     />
                                   </div>
                                   <div>
@@ -493,12 +501,8 @@ const {isAuthenticated}=useAuth()
                                       Response
                                     </div>
                                     <span className="font-mono font-semibold">
-                                      {parseInt(
-                                        website.checkInterval
-                                      ) > 0
-                                        ? `${parseInt(
-                                            website.checkInterval
-                                          )}ms`
+                                      {parseInt(website.responseTime) > 0
+                                        ? `${parseInt(website.responseTime)}ms`
                                         : "—"}
                                     </span>
                                   </div>
@@ -508,22 +512,19 @@ const {isAuthenticated}=useAuth()
                                     </div>
                                     <div className="flex items-center space-x-2">
                                       <span className="font-mono font-semibold">
-                                        {90}%
+                                        {website.uptime}%
                                       </span>
                                       <div className="w-12 h-2 bg-muted/50 rounded-full overflow-hidden">
                                         <div
                                           className={`h-full rounded-full transition-all duration-500 ${
-                                            parseInt(website.checkInterval) >=
-                                            99.5
+                                            parseInt(website.uptime) >= 99.5
                                               ? "bg-gradient-to-r from-green-500 to-green-400"
-                                              : parseInt(
-                                                  website.checkInterval
-                                                ) >= 95
+                                              : parseInt(website.uptime) >= 95
                                               ? "bg-gradient-to-r from-yellow-500 to-yellow-400"
                                               : "bg-gradient-to-r from-red-500 to-red-400"
                                           }`}
                                           style={{
-                                            width: `${website.checkInterval}%`,
+                                            width: `${website.uptime}%`,
                                           }}
                                         />
                                       </div>
@@ -535,7 +536,7 @@ const {isAuthenticated}=useAuth()
                                     </div>
                                     <div className="flex items-center space-x-2">
                                       <span className="text-sm font-medium">
-                                        {JSON.stringify(website.lastCheckAt)}
+                                        {formatLastCheck(website.lastCheckAt)}
                                       </span>
                                       {website.status === "checking" && (
                                         <RefreshCw className="h-3 w-3 animate-spin text-primary" />
@@ -580,18 +581,19 @@ const {isAuthenticated}=useAuth()
                                 key={website.monitorId}
                                 className="border-border/50 hover:bg-muted/20 transition-colors duration-200 group cursor-pointer"
                                 onClick={() =>
-                                  window.open(
-                                    `/monitor/${website.monitorId}`,
-                                    "_blank"
-                                  )
+                                  router.push(`/monitor/${website.monitorId}?website=${website}`)
+
                                 }
                               >
                                 <TableCell>
                                   <div className="flex items-center space-x-3">
                                     <Avatar className="h-10 w-10 border-2 border-primary/20">
-                                      {/* <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-lg">
-                                        {website.favicon}
-                                      </AvatarFallback> */}
+                                      <AvatarImage src={website.icon} />
+                                      <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-lg">
+                                        {website.websiteName
+                                          .charAt(0)
+                                          .toUpperCase()}
+                                      </AvatarFallback>
                                     </Avatar>
                                     <div>
                                       <div className="font-semibold text-foreground group-hover:text-primary transition-colors">
@@ -606,17 +608,19 @@ const {isAuthenticated}=useAuth()
                                 </TableCell>
                                 <TableCell>
                                   {/* update to change tihe status */}
-                                  <WebsiteStatusBadge status={"online"} />
+                                  <WebsiteStatusBadge
+                                    status={
+                                      website.status == "UP"
+                                        ? "online"
+                                        : "offline"
+                                    }
+                                  />
                                 </TableCell>
                                 <TableCell>
                                   <div className="flex items-center space-x-2">
                                     <span className="font-mono font-semibold">
-                                      {parseInt(
-                                        website.checkInterval
-                                      ) > 0
-                                        ? `${parseInt(
-                                            website.checkInterval
-                                          )}ms`
+                                      {parseInt(website.responseTime) > 0
+                                        ? `${parseInt(website.responseTime)}ms`
                                         : "—"}
                                     </span>
                                   </div>
@@ -624,25 +628,20 @@ const {isAuthenticated}=useAuth()
                                 <TableCell>
                                   <div className="flex items-center space-x-3">
                                     <span className="font-mono font-semibold">
-                                      {website.checkInterval}%
+                                      {website.uptime}%
                                     </span>
                                     <div className="w-20 h-2 bg-muted/50 rounded-full overflow-hidden">
                                       <div
                                         className={`h-full rounded-full transition-all duration-500 ${
-                                          parseInt(
-                                            website.checkInterval
-                                          ) >= 99.5
+                                          parseInt(website.responseTime) >= 99.5
                                             ? "bg-gradient-to-r from-green-500 to-green-400"
-                                            : parseInt(
-                                                website.checkInterval
-                                              ) >= 95
+                                            : parseInt(website.responseTime) >=
+                                              95
                                             ? "bg-gradient-to-r from-yellow-500 to-yellow-400"
                                             : "bg-gradient-to-r from-red-500 to-red-400"
                                         }`}
                                         style={{
-                                          width: `${parseInt(
-                                            website.checkInterval
-                                          )}%`,
+                                          width: `${parseInt(website.uptime)}%`,
                                         }}
                                       />
                                     </div>
@@ -651,9 +650,7 @@ const {isAuthenticated}=useAuth()
                                 <TableCell>
                                   <div className="flex items-center space-x-2">
                                     <span className="text-sm font-medium">
-                                      {new Date(
-                                        website.lastCheckAt
-                                      ).toISOString()}
+                                      {formatLastCheck(website.lastCheckAt)}
                                     </span>
                                     {website.status === "checking" && (
                                       <RefreshCw className="h-3 w-3 animate-spin text-primary" />
@@ -682,10 +679,9 @@ const {isAuthenticated}=useAuth()
                                         className="hover:bg-muted/50"
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          window.open(
-                                            `/monitor/${website.monitorId}`,
-                                            "_blank"
-                                          );
+                                         router.push(
+                                           `/monitor/${website.monitorId}`
+                                         );
                                         }}
                                       >
                                         <Eye className="h-4 w-4 mr-2" />

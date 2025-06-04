@@ -31,6 +31,7 @@ import { ResponseTimeDetailedChart } from "@/components/response-time-detailed-c
 import { AlertLogItem } from "@/components/alert-log-item";
 import { MonitorDetailTYPE } from "@/types";
 import { MOCK_MONITOR_DETAILS } from "@/constant";
+import { useSearchParams } from "next/navigation";
 
 
 
@@ -40,7 +41,7 @@ export default function MonitorDetail() {
   const [monitor] = useState<MonitorDetailTYPE>(MOCK_MONITOR_DETAILS);
   const [timeRange, setTimeRange] = useState<"24h" | "7d" | "30d">("24h");
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
+ 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });

@@ -28,8 +28,8 @@ createAt DateTime @default(now())
 isPaused Boolean? @default(false)
 checkInterval String
 lastCheckAt DateTime @default(now())
-status String
-responseTime String
+status String? 
+responseTime String @default("0")
 uptime String @default("100")
 userId String
 User User @relation(fields: [userId],references: [id],onDelete: Cascade) 

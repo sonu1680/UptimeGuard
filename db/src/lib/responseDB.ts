@@ -5,6 +5,7 @@ import { tryCatchHandler } from "./tryCathHandler";
 export const responseDB = async (data: dataFromEngine) => {
   for (const site of data.sites) {
       if(site){
+        //console.log(site)
           const res = await tryCatchHandler(() =>
             prisma.responseLog.create({
                 data: {
@@ -15,13 +16,19 @@ export const responseDB = async (data: dataFromEngine) => {
                 },
             })
         );
-        const lastCheckAts = await tryCatchHandler(() =>
+         const a=await tryCatchHandler(() =>
           prisma.monitor.update({
             where: {
               monitorId: site.monitorId,
             },
             data: {
-              lastCheckAt:new Date()
+              lastCheckAt:new Date(),
+              responseTime:site.responseTime,
+              uptime:"100",
+              status:site.status
+
+
+              
             },
           })
         );
