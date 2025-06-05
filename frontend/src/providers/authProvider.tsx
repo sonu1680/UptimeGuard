@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect } from "react";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -24,6 +24,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: session, status } = useSession();
+
   const value: AuthContextType = {
     isAuthenticated: !!session?.user,
     isLoading: status === "loading",

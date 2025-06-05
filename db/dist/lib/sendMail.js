@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendMail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
+const path_1 = __importDefault(require("path"));
 const transporter = nodemailer_1.default.createTransport({
     service: "gmail",
     auth: {
@@ -26,13 +27,33 @@ const sendMail = (id, msg) => __awaiter(void 0, void 0, void 0, function* () {
         yield transporter.sendMail({
             from: '"WATCH TOWER" <thecrazymanofficial0@gmail.com>',
             to: id,
-            subject: "Hello ✔",
-            text: `${msg}`,
-            html: "<b>Hello user?</b>",
+            subject: "⚠️ Website Down Alert",
+            text: msg,
+            html: `
+        <div style="background-color:#121212;padding:30px;color:#ffffff;font-family:Arial,sans-serif;border-radius:8px;">
+          <div style="text-align:center;margin-bottom:20px;">
+            <img src="cid:logo" alt="Watch Tower Logo" style="width:60px;height:60px;" />
+            <h2 style="color:#ff4d4f;">Website Down Detected</h2>
+          </div>
+          <p style="font-size:16px;">
+            Hello,<br/><br/>
+            ${msg}
+          </p>
+          <p style="margin-top:20px;font-size:14px;color:#aaa;">— Team Watch Tower</p>
+        </div>
+      `,
+            attachments: [
+                {
+                    filename: "logo.png",
+                    path: path_1.default.join(process.cwd(), "public", "logo.png"),
+                    cid: "logo",
+                },
+            ],
         });
         return 200;
     }
     catch (error) {
+        console.error("Email send error:", error);
         return 500;
     }
 });

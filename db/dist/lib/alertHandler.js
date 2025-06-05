@@ -14,10 +14,9 @@ const prisma_1 = require("./prisma");
 const sendMail_1 = require("./sendMail");
 const sendTelegram_1 = require("./sendTelegram");
 const tryCathHandler_1 = require("./tryCathHandler");
-const MESSAGE = "your site is down plz update it";
+const MESSAGE = "Alert: Your website is currently down. Please investigate as soon as possible.";
 const alertHandler = (data) => __awaiter(void 0, void 0, void 0, function* () {
     if (data) {
-        console.log(data, "sonu");
         const alertMode = yield (0, tryCathHandler_1.tryCatchHandler)(() => prisma_1.prisma.notification.findMany({
             where: {
                 monitorId: data.monitorId,
@@ -33,13 +32,13 @@ const alertHandler = (data) => __awaiter(void 0, void 0, void 0, function* () {
                             sentAt: new Date(),
                             msg: MESSAGE,
                             alertType: "EMAIL",
-                            errorMsg: data.errorMsg || "",
+                            errorMsg: data.error || "",
                             responseCode: data.responseCode || "",
                             responseTime: data.responseTime || "",
                             status: data.status || "DOWN",
                         },
                     }));
-                    console.log("alert sent to mail");
+                    //console.log("alert sent to mail");
                 }
             }
             if (alertMode.data[0].telegramId) {
@@ -51,13 +50,13 @@ const alertHandler = (data) => __awaiter(void 0, void 0, void 0, function* () {
                             sentAt: new Date(),
                             msg: MESSAGE,
                             alertType: "TELEGRAM",
-                            errorMsg: data.errorMsg || "",
+                            errorMsg: data.error || "",
                             responseCode: data.responseCode || "",
                             responseTime: data.responseTime || "",
                             status: data.status || "DOWN",
                         },
                     }));
-                    console.log("alert sent to telegram");
+                    //console.log("alert sent to telegram")
                 }
             }
         }

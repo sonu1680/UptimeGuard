@@ -37,6 +37,7 @@ export async function POST(req: Request) {
       },
     })
   );
+  console.log(res)
 return responseHandler(res,"website adde","website add fail",201,500,res);
 
 }

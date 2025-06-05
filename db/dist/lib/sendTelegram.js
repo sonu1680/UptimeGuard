@@ -30,5 +30,5 @@ const sendToTelegram = (chatId, msg) => __awaiter(void 0, void 0, void 0, functi
 exports.sendToTelegram = sendToTelegram;
 bot.on("message", (msg) => {
     const chatId = msg.chat.id;
-    bot.sendMessage(chatId, `Thanks, got your message!, Here is your ID:${chatId} and start watching your site :)`);
+    bot.sendMessage(chatId, `Welcome to UptimeGuard!, Here is your chat ID:${chatId} and start watching your site :)`);
 });

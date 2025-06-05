@@ -36,7 +36,7 @@ export function AuthForm() {
     try {
       setIsLoading(true);
       setError("");
-       await signIn(provider,{ callbackUrl: "/dashboard" });
+       await signIn("google",{ callbackUrl: "/dashboard" });
 
       setSuccess(`Redirecting to ${provider}`);
      
@@ -83,14 +83,14 @@ export function AuthForm() {
         <Tabs defaultValue="signup" className="w-full">
           <TabsContent value="signup" className="space-y-4 pt-4">
             <div className="grid gap-3">
-              <SocialButton
+              {/* <SocialButton
                 icon={Github}
                 provider="GitHub"
                 onClick={() => handleSocialLogin("github")}
                 isLoading={isLoading}
                 //@ts-ignore
                 disabled={isLoading}
-              />
+              /> */}
               <SocialButton
                 //@ts-ignore
                 icon={(props) => (
