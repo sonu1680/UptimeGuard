@@ -16,7 +16,7 @@ export const checkStatus = async (data: dataFromEngine) => {
           responseTime: (performance.now() - start).toFixed(2).toString(),
           checkAt: new Date(),
           responseCode: res.status.toString(),
-          status: "UP",
+          status: "online",
         };
       } catch (error: any) {
         return {
@@ -26,7 +26,7 @@ export const checkStatus = async (data: dataFromEngine) => {
           responseTime: (performance.now() - start).toFixed(2),
           checkAt: new Date(),
           responseCode: error?.response?.status?.toString() || "N/A",
-          status: "DOWN",
+          status: "offline",
           error: error?.message || "Unknown error",
         };
       }
@@ -43,7 +43,7 @@ export const checkStatus = async (data: dataFromEngine) => {
           responseTime: "0",
           checkAt: Date.now().toString(),
           responseCode: "N/A",
-          status: "DOWN",
+          status: "offline",
           error: "Unhandled rejection",
         }
   );

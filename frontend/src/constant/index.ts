@@ -158,12 +158,7 @@ export const STATUS_CONFIG = {
     className:
       "bg-red-500/20 text-red-700 dark:text-red-400 border-red-500/30 shadow-red-500/10",
   },
-  warning: {
-    icon: AlertCircle,
-    label: "Warning",
-    className:
-      "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border-yellow-500/30 shadow-yellow-500/10",
-  },
+
   checking: {
     icon: Clock,
     label: "Checking",

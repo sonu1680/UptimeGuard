@@ -145,6 +145,6 @@ export interface StatsCardProps {
   
 
 export interface WebsiteStatusBadgeProps {
-  status: "online" | "offline" | "warning" | "checking";
+  status: "online" | "offline"  | "checking";
   className?: string;
 }

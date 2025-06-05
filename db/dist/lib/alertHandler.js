@@ -35,7 +35,7 @@ const alertHandler = (data) => __awaiter(void 0, void 0, void 0, function* () {
                             errorMsg: data.error || "",
                             responseCode: data.responseCode || "",
                             responseTime: data.responseTime || "",
-                            status: data.status || "DOWN",
+                            status: data.status || "offline",
                         },
                     }));
                     //console.log("alert sent to mail");
@@ -53,7 +53,7 @@ const alertHandler = (data) => __awaiter(void 0, void 0, void 0, function* () {
                             errorMsg: data.error || "",
                             responseCode: data.responseCode || "",
                             responseTime: data.responseTime || "",
-                            status: data.status || "DOWN",
+                            status: data.status || "offline",
                         },
                     }));
                     //console.log("alert sent to telegram")

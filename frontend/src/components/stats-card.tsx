@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { StatsCardProps } from "@/types"
-import type { LucideIcon } from "lucide-react"
 
 
 export function StatsCard({ title, value, icon: Icon, trend, gradient }: StatsCardProps) {

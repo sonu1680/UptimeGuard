@@ -15,6 +15,7 @@ const tryCathHandler_1 = require("./tryCathHandler");
 const responseDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
     for (const site of data.sites) {
         if (site) {
+            console.log(site);
             const res = yield (0, tryCathHandler_1.tryCatchHandler)(() => prisma_1.prisma.responseLog.create({
                 data: {
                     monitorId: site.monitorId,

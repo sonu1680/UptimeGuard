@@ -19,14 +19,14 @@ function main() {
             yield redisClient.connect();
             console.log("Redis connected");
             while (true) {
-                const res = yield redisClient.brPop("db_process", 0);
-                if (res === null || res === void 0 ? void 0 : res.element) {
-                    const data = JSON.parse(res.element);
+                const res = yield redisClient.rPop("db_process");
+                if (res) {
+                    const data = JSON.parse(res);
                     yield (0, responseDB_1.responseDB)(data.data);
                 }
-                const res1 = yield redisClient.brPop("alert_process", 0);
-                if (res1 === null || res1 === void 0 ? void 0 : res1.element) {
-                    const data = JSON.parse(res1.element);
+                const res1 = yield redisClient.rPop("alert_process");
+                if (res1) {
+                    const data = JSON.parse(res1);
                     yield (0, alertHandler_1.alertHandler)(data.data);
                 }
             }

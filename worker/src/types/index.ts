@@ -21,6 +21,6 @@ export type resultFromWorker = {
   responseTime: string;
   responseCode: string;
   checkAt: Date;
-  status: "UP"|"DOWN";
+  status: "online"|"offline";
   error?:string
 };
