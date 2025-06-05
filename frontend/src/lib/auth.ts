@@ -17,9 +17,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
   //-----------------
 
-  // pages: {
-  //   signIn: "/auth",
-  // },
+  pages: {
+    signIn: "/auth",
+  },
   callbacks: {
     async signIn({ user, account }) {
       let existingUser = await prisma.user.findFirst({
