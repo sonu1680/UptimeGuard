@@ -4,9 +4,7 @@ import type React from "react";
 import { signIn } from "next-auth/react";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+
 import {
   Card,
   CardContent,
@@ -18,15 +16,11 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
   Activity,
-  Github,
-  Mail,
-  Lock,
+
   AlertCircle,
-  ArrowRight,
-  Loader2,
+
   Check,
-  Eye,
-  EyeOff,
+
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import Link from "next/link";
@@ -41,7 +35,7 @@ export function AuthForm() {
     try {
       setIsLoading(true);
       setError("");
-       await signIn(provider,{ callbackUrl: "/dashboard" });
+       await signIn("google",{ callbackUrl: "/dashboard" });
 
       setSuccess(`${provider} login successful! Redirecting...`);
      
@@ -85,17 +79,16 @@ export function AuthForm() {
             <AlertDescription>{success}</AlertDescription>
           </Alert>
         )}
-
         <Tabs defaultValue="signup" className="w-full">
           <TabsContent value="signup" className="space-y-4 pt-4">
             <div className="grid gap-3">
-              <SocialButton
+              {/* <SocialButton
                 icon={Github}
                 provider="GitHub"
-                onClick={() => handleSocialLogin("github")}
+                onClick={() => handleSocialLogin("google")}
                 //@ts-ignore
                 disabled={isLoading}
-              />
+              /> */}
               <SocialButton
                 //@ts-ignore
                 icon={(props) => (

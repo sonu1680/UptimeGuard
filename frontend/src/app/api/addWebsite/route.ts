@@ -25,14 +25,14 @@ export async function POST(req: Request) {
     prisma.monitor.create({
       data: {
         userId: session?.user!.id!,
-        websiteName: websiteName,
-        url:url,
-        checkInterval:checkInterval,
+        websiteName: websiteName.trim(),
+        url:url.trim(),
+        checkInterval:checkInterval.trim(),
 
         notification: {
           create: {
-            emailId: emailId,
-            telegramId: telegramId,
+            emailId: emailId?.trim(),
+            telegramId: telegramId?.trim(),
           },
         },
       },
