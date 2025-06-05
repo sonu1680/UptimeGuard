@@ -1,5 +1,6 @@
 
 import GoogleProvider from "next-auth/providers/google";
+import GithubProvider from "next-auth/providers/github";
 
 import NextAuth from "next-auth";
 import type { NextAuthConfig } from "next-auth";
@@ -12,11 +13,14 @@ export const authConfig: NextAuthConfig = {
       clientId: process.env.NEXT_GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.NEXT_GOOGLE_CLIENT_ID_SECRET || "",
     }),
-  
+    GithubProvider({
+      clientId: process.env.NEXT_GITHUB_CLIENT_ID || "",
+      clientSecret: process.env.NEXT_GITHUB_CLIENT_ID_SECRET || "",
+    }),
   ],
 
   pages: {
-    signIn: "/auth", //
+    signIn: "/auth", 
   },
 
   session: {
@@ -25,19 +29,19 @@ export const authConfig: NextAuthConfig = {
 
   callbacks: {
     async signIn({ user, account }) {
-        let existingUser = await prisma.user.findUnique({
-          where: { email: user.email || "" },
-        });
+      let existingUser = await prisma.user.findUnique({
+        where: { email: user.email || "" },
+      });
 
-        if (!existingUser) {
-          existingUser=await prisma.user.create({
-            data: {
-              email: user.email || "",
-              name: user.name || "",
-            },
-          });
-        }
-        user.id = existingUser?.id || "";
+      if (!existingUser) {
+        existingUser = await prisma.user.create({
+          data: {
+            email: user.email || "",
+            name: user.name || "",
+          },
+        });
+      }
+      user.id = existingUser?.id || "";
       return true;
     },
 
