@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: "UptimeGuard",
   description:
     "Reliable website uptime and performance monitoring with instant alerts.",
-    icons:'/logo.png'
+    icons:'/logo.svg'
 };
 
 export default function RootLayout({
