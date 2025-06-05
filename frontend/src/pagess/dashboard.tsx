@@ -140,6 +140,7 @@ export default function Dashboard() {
 
       if (res.status === 201) {
         toast.success(`Website ${newWebsite.websiteName} added successfully.`);
+
         setNewWebsite({
           websiteName: null,
           url: null,

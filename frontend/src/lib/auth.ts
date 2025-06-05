@@ -38,6 +38,7 @@ export const authConfig: NextAuthConfig = {
           data: {
             email: user.email || "",
             name: user.name || "",
+            provider: account?.provider || "",
           },
         });
       }

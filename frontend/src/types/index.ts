@@ -50,12 +50,14 @@ export interface MonitorDetailView {
   uptime: string;
   userId: string;
   alertLogs: any[];
-  notification: Array<{
+  notification: {
     id: string;
     emailId: string;
     telegramId: string;
     monitorId: string;
-  }>;
+    isEmail?:boolean;
+    isTelegram?:boolean
+  } ;
   responseLog: Array<{
     id: string;
     responseTime: string;
@@ -79,6 +81,17 @@ export interface NewWebsite {
   emailId: string | null;
   telegramId: string | null;
   checkInterval: string | null;
+}
+export interface updateWebsite {
+  monitorId: string;
+  websiteName: string | null;
+  url: string | null;
+  emailId: string | null;
+  telegramId: string | null;
+  checkInterval: string | null;
+  isTelegram?: boolean;
+  isEmail?: boolean;
+  closeDialog?:()=>void;
 }
 
 export interface AlertLog {

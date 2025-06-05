@@ -14,8 +14,7 @@ model User{
 id String @id @unique @default(uuid())
 name String
 email String @unique
-//provide String
-//image  add for google login
+provider String?
 monitor Monitor[]
 }
 
@@ -28,7 +27,7 @@ createAt DateTime @default(now())
 isPaused Boolean? @default(false)
 checkInterval String
 lastCheckAt DateTime @default(now())
-status String? 
+status String? @default("CHECKING")
 responseTime String @default("0")
 uptime String @default("100")
 userId String
@@ -66,6 +65,8 @@ model Notification{
   id String @id @default(uuid())
   emailId String?
   telegramId String?
+  isTelegram Boolean? @default(false)
+  isEmail Boolean? @default(false)
   monitorId String
   monitor Monitor @relation(fields: [monitorId],references: [monitorId],onDelete: Cascade)  
    

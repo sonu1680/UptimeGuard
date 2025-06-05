@@ -11,15 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const cron_1 = require("cron");
 const fetchFromDB_1 = require("./lib/fetchFromDB");
+const MIN_1 = "1";
 const MIN_5 = "5";
 const MIN_30 = "30";
 const HR_1 = "60";
 const HR_24 = "1440";
-//testiing purpose only
-// const job = new CronJob("*/2 * * * * *", async () => {
-//   await fetchFromDB("2");
-// });
-//-------------------
+const job = new cron_1.CronJob("0 * * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, fetchFromDB_1.fetchFromDB)(MIN_1);
+}));
 const job1 = new cron_1.CronJob("0 */5 * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, fetchFromDB_1.fetchFromDB)(MIN_5);
 }));
@@ -32,7 +31,7 @@ const job3 = new cron_1.CronJob("0 0 * * * *", () => __awaiter(void 0, void 0, v
 const job4 = new cron_1.CronJob("0 0 0 * * *", () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, fetchFromDB_1.fetchFromDB)(HR_24);
 }));
-//job.start();
+job.start();
 job1.start();
 job2.start();
 job3.start();

@@ -28,35 +28,34 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { ResponseTimeDetailedChart } from "@/components/response-time-detailed-chart";
 import { AlertLogItem } from "@/components/alert-log-item";
-import {  MonitorDetailView } from "@/types";
+import { MonitorDetailView } from "@/types";
 import { useParams } from "next/navigation";
 import { useData } from "@/providers/websiteProvider";
 import axios from "axios";
 import { toast } from "sonner";
 import LoadingPage from "@/components/loadingPage";
-
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import UpdateSiteDialog from "@/components/updateSiteDialog";
 
 export default function MonitorDetail() {
-  const [monitor, setMonitor] =
-    useState<MonitorDetailView|null>(null);
+  const [monitor, setMonitor] = useState<MonitorDetailView | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
   const [timeRange, setTimeRange] = useState<"24h" | "7d" | "30d">("24h");
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const {data,loading}=useData();
   const params = useParams();
   const monitorId = params.id;
 
-const getData=async()=>{
-  const res = await axios.get(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/getDetailView?monitorid=${monitorId}`
-  );
- // console.log(res.data?.data?.data)
-  setMonitor(res.data?.data?.data);
-}
-
-
+  const getData = async () => {
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/getDetailView?monitorid=${monitorId}`
+    );
+    // console.log(res.data?.data?.data)
+    setMonitor(res.data?.data?.data);
+  };
 
   useEffect(() => {
-    if(monitorId){
+    if (monitorId) {
       getData();
     }
     const handleMouseMove = (e: MouseEvent) => {
@@ -85,16 +84,17 @@ const getData=async()=>{
         return <Mail className="h-4 w-4" />;
       case "telegram":
         return <Smartphone className="h-4 w-4" />;
-   
-     
+
       default:
         return <Bell className="h-4 w-4" />;
     }
   };
 
-if(!monitor){
-  return <LoadingPage/>;
-}
+
+
+  if (!monitor) {
+    return <LoadingPage />;
+  }
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -342,7 +342,7 @@ if(!monitor){
                     <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
                       {["emailId", "telegramId"].map((method, index) => {
                         const methodValue =
-                          monitor?.notification?.[0]?.[
+                          monitor?.notification?.[
                             method as "emailId" | "telegramId"
                           ];
 
@@ -369,27 +369,28 @@ if(!monitor){
                               </CardTitle>
                             </CardHeader>
 
-                            {/* <CardContent className="p-4 sm:p-6 pt-0">
+                            <CardContent className="p-4 sm:p-6 pt-0">
                               <div className="text-sm text-muted-foreground mb-3 truncate">
                                 {methodValue || "Not configured"}
                               </div>
                               <div className="flex space-x-2">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="flex-1 text-xs"
+                                <Dialog
+                                  open={isAddDialogOpen}
+                                  onOpenChange={setIsAddDialogOpen}
                                 >
-                                  Edit
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="flex-1 text-xs"
-                                >
-                                  Test
-                                </Button>
+                                  <DialogTrigger asChild>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      className="flex-1 text-xs"
+                                    >
+                                      Edit
+                                    </Button>
+                                  </DialogTrigger>
+                                  <UpdateSiteDialog monitorId={monitor.monitorId} emailId={monitor.notification.emailId} telegramId={monitor.notification.telegramId} checkInterval={monitor.checkInterval} url={monitor.url} websiteName={monitor.websiteName} isEmail={monitor.notification.isEmail} isTelegram={monitor.notification.isTelegram}   closeDialog={() => setIsAddDialogOpen(false)}    />
+                                </Dialog>
                               </div>
-                            </CardContent> */}
+                            </CardContent>
                           </Card>
                         );
                       })}

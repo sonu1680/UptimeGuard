@@ -24,6 +24,7 @@ const fetchFromDB = (interval) => __awaiter(void 0, void 0, void 0, function* ()
             checkInterval: true,
         },
     }));
+    console.log(res.data);
     if (res.data) {
         RedisManager_1.RedisManager.getInstance().sendToWorker(res.data);
     }

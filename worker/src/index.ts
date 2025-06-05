@@ -11,6 +11,7 @@ console.log("connected")
     const res = await redisClient.rPop("message");
     if (res) {
       try {
+        
         const data = JSON.parse(res);
         const response=await checkStatus(data);
         await redisClient.publish(response.batchId,JSON.stringify(response))

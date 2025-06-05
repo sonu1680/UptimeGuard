@@ -27,17 +27,18 @@ export async function POST(req: Request) {
         websiteName: websiteName.trim(),
         url:url.trim(),
         checkInterval:checkInterval.trim(),
-
         notification: {
           create: {
-            emailId: emailId?.trim(),
-            telegramId: telegramId?.trim(),
+            emailId: emailId?.trim()||null,
+            telegramId: telegramId?.trim()||null,
+            isTelegram:telegramId?true:false,
+            isEmail:emailId?true:false,
+            
           },
         },
       },
     })
   );
-  console.log(res)
 return responseHandler(res,"website adde","website add fail",201,500,res);
 
 }
