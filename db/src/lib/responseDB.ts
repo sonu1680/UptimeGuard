@@ -5,7 +5,6 @@ import { tryCatchHandler } from "./tryCathHandler";
 export const responseDB = async (data: dataFromEngine) => {
   for (const site of data.sites) {
       if(site){
-        console.log(site);
           const res = await tryCatchHandler(() =>
             prisma.responseLog.create({
                 data: {

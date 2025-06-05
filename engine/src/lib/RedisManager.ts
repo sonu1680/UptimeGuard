@@ -8,11 +8,29 @@ export class RedisManager {
   private static instance: RedisManager;
 
   constructor() {
-    this.client = createClient();
+    this.client = createClient({
+      username: process.env.REDIS_USERNAME,
+      password: process.env.REDIS_PASSWORD!,
+      socket: {
+        host: "redis-17571.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
+        port: 17571,
+      },
+    });
     this.client.connect();
 
-    this.publisher = createClient();
+    this.publisher = createClient({
+      username: process.env.REDIS_USERNAME,
+      password: process.env.REDIS_PASSWORD!,
+      socket: {
+        host: "redis-17571.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
+        port: 17571,
+      },
+    });
     this.publisher.connect();
+    this.publisher.on("error", (err: any) =>
+      console.log("Redis Client Error", err)
+    );
+    console.log("Redis connected");
   }
 
   public static getInstance() {

@@ -12,11 +12,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const redis_1 = require("redis");
 const responseDB_1 = require("./lib/responseDB");
 const alertHandler_1 = require("./lib/alertHandler");
-const redisClient = (0, redis_1.createClient)();
+const redisClient = (0, redis_1.createClient)({
+    username: process.env.REDIS_USERNAME,
+    password: process.env.REDIS_PASSWORD,
+    socket: {
+        host: "redis-17571.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
+        port: 17571,
+    },
+});
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield redisClient.connect();
+            redisClient.on("error", (err) => console.log("Redis Client Error", err));
             console.log("Redis connected");
             while (true) {
                 const res = yield redisClient.rPop("db_process");

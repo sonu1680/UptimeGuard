@@ -8,13 +8,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const redis_1 = require("redis");
 const checkStatus_1 = require("./lib/checkStatus");
-const redisClient = (0, redis_1.createClient)();
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+const redisClient = (0, redis_1.createClient)({
+    username: process.env.REDIS_USERNAME,
+    password: process.env.REDIS_PASSWORD,
+    socket: {
+        host: "redis-17571.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
+        port: 17571,
+    },
+});
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         yield redisClient.connect();
+        redisClient.on("error", (err) => console.log("Redis Client Error", err));
         console.log("connected");
         while (true) {
             const res = yield redisClient.rPop("message");
