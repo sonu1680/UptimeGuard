@@ -4,7 +4,6 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "./authProvider";
 import { Website } from "@/types";
-import { usePathname } from "next/navigation";
 
 
 
@@ -25,9 +24,10 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-const {isAuthenticated,user}=useAuth()
+const {isAuthenticated,user,isLoading}=useAuth()
 
   const fetchData = async (id:string) => {
+   // console.log("sonu",id)
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_URL}/getAllSite?userid=${id}`
@@ -42,10 +42,12 @@ const {isAuthenticated,user}=useAuth()
   };
 
   useEffect(() => {
-      if(isAuthenticated){
-        fetchData(user?.id!);
+   // console.log("is auth",isAuthenticated)
 
-    }
+      if (isAuthenticated || !isLoading) {
+       // console.log("sonu",user)
+         fetchData(user?.id!);
+      }
   }, [isAuthenticated && user]);
 
   return (

@@ -20,7 +20,6 @@ export async function POST(req: Request) {
   if (!session?.user?.id) {
     return new Response("Unauthorized", { status: 401 });
   }
-  
   const res = await tryCatchHandler(() =>
     prisma.monitor.create({
       data: {
@@ -38,7 +37,6 @@ export async function POST(req: Request) {
       },
     })
   );
-
 return responseHandler(res,"website adde","website add fail",201,500,res);
 
 }
