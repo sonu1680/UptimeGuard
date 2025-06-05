@@ -146,7 +146,7 @@ export default function MonitorDetail() {
               </div>
               <div className="flex items-center gap-2 sm:gap-3">
                 <WebsiteStatusBadge
-                  status={monitor.status == "UP" ? "online" : "offline"}
+                  status={monitor.status||"checking"}
                   className="text-xs"
                 />
                 <ThemeToggle />

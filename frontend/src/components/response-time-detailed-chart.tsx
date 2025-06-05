@@ -16,11 +16,11 @@ export function ResponseTimeDetailedChart({ data, timeRange }: ResponseTimeDetai
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "success":
+      case "online":
         return "bg-gradient-to-t from-green-500/60 to-green-500/30"
-      case "error":
+      case "offline":
         return "bg-gradient-to-t from-red-500/60 to-red-500/30"
-      case "timeout":
+      case "checking":
         return "bg-gradient-to-t from-yellow-500/60 to-yellow-500/30"
       default:
         return "bg-gradient-to-t from-primary/60 to-primary/30"
@@ -155,7 +155,7 @@ export function ResponseTimeDetailedChart({ data, timeRange }: ResponseTimeDetai
           <div className="text-center p-3 bg-muted/30 rounded-lg">
             <div className="font-mono font-semibold text-blue-600 dark:text-blue-400 text-lg">
               {Math.round(
-                (data.filter((d) => d.status === "success").length /
+                (data.filter((d) => d.status === "online").length /
                   data.length) *
                   100
               )}

@@ -28,8 +28,7 @@ export function ResponseTimeChart({ data, siteName, status }: ResponseTimeChartP
         return "from-green-500/20 to-green-500/5"
       case "offline":
         return "from-red-500/20 to-red-500/5"
-      case "warning":
-        return "from-yellow-500/20 to-yellow-500/5"
+    
       default:
         return "from-blue-500/20 to-blue-500/5"
     }
