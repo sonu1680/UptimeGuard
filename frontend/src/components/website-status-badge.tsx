@@ -5,7 +5,6 @@ import { WebsiteStatusBadgeProps } from "@/types"
 
 export function WebsiteStatusBadge({ status, className }: WebsiteStatusBadgeProps) {
 
-//@ts-ignore
   const config = STATUS_CONFIG[status];
   const Icon = config.icon
 

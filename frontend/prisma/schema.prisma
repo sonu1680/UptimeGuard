@@ -24,7 +24,7 @@ model Monitor {
   isPaused      Boolean?       @default(false)
   checkInterval String
   lastCheckAt   DateTime       @default(now())
-  status        String?        @default("CHECKING")
+  status        String?        @default("checking")
   responseTime  String         @default("0")
   uptime        String         @default("100")
   userId        String

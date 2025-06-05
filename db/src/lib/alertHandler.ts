@@ -28,7 +28,7 @@ export const alertHandler = async (data: websites) => {
                   errorMsg: data.error || "",
                   responseCode: data.responseCode || "",
                   responseTime: data.responseTime || "",
-                  status: data.status || "DOWN",
+                  status: data.status || "offline",
                 },
               })
             );
@@ -50,7 +50,7 @@ export const alertHandler = async (data: websites) => {
                errorMsg: data.error || "",
                responseCode: data.responseCode || "",
                responseTime: data.responseTime || "",
-               status: data.status || "DOWN",
+               status: data.status || "offline",
              },
            })
          );

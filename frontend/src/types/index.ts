@@ -28,7 +28,7 @@ export interface Website {
   uptime:string
   icon?:string
   
-  status?: "UP" | "DOWN" | "warning" | "checking";
+  status?: "online" | "offline" | "checking";
 
 }
 
@@ -45,7 +45,7 @@ export interface MonitorDetailView {
   isPaused: boolean;
   checkInterval: string;
   lastCheckAt: Date;
-  status: "UP" | "DOWN";
+  status: "online" | "offline" |"checking";
   responseTime: string;
   uptime: string;
   userId: string;
@@ -102,7 +102,7 @@ export interface AlertLog {
   alertType: "EMAIL" | "TELEGRAM" | string; 
   responseTime: string;
   responseCode: string;
-  status: "UP" | "DOWN" | string;
+  status: "online" | "offline" | "checking" |string;
   errorMsg: string;
 }
 
@@ -116,7 +116,7 @@ export interface AlertLogItemProps {
 export interface ResponseTimeChartProps {
   data: number[];
   siteName: string;
-  status: "online" | "offline" | "warning" | "checking";
+  status: "online" | "offline"  | "checking";
 }
   
 
@@ -127,7 +127,7 @@ export interface ResponseTimeDetailedChartProps {
     responseCode:string;
     monitorId:string;
     id:string
-    status?: "success" | "error" | "timeout"|"UP"|"DOWN";
+    status?: "offline"|"online"|"checking";
   }>;
   timeRange: "24h" | "7d" | "30d";
 }
@@ -145,6 +145,6 @@ export interface StatsCardProps {
   
 
 export interface WebsiteStatusBadgeProps {
-  status: "online" | "offline" | "warning" | "checking"|"UP"|"DOWN";
+  status: "online" | "offline" | "warning" | "checking";
   className?: string;
 }

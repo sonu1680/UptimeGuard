@@ -199,9 +199,8 @@ try {
 
   const overallStats = {
     total: websites?.length || 0,
-    online: websites?.filter((w) => w.status === "UP").length || 0,
-    offline: websites?.filter((w) => w.status === "DOWN").length || 0,
-    // warning: websites?.filter((w) => parseInt(w.responseTime) >= 100).length || 0,
+    online: websites?.filter((w) => w.status === "online").length || 0,
+    offline: websites?.filter((w) => w.status === "offline").length || 0,
     avgResponseTime,
   };
   
@@ -620,11 +619,7 @@ try {
                                       Status
                                     </div>
                                     <WebsiteStatusBadge
-                                      status={
-                                        website.status == "UP"
-                                          ? "online"
-                                          : "offline"
-                                      }
+                                      status={website.status || "checking"}
                                     />
                                   </div>
                                   <div>
@@ -739,11 +734,7 @@ try {
                                 <TableCell>
                                   {/* update to change tihe status */}
                                   <WebsiteStatusBadge
-                                    status={
-                                      website.status == "UP"
-                                        ? "online"
-                                        : "offline"
-                                    }
+                                    status={website.status || "checking"}
                                   />
                                 </TableCell>
                                 <TableCell>
