@@ -33,6 +33,7 @@ import { useParams } from "next/navigation";
 import { useData } from "@/providers/websiteProvider";
 import axios from "axios";
 import { toast } from "sonner";
+import LoadingPage from "@/components/loadingPage";
 
 
 export default function MonitorDetail() {
@@ -92,7 +93,7 @@ const getData=async()=>{
   };
 
 if(!monitor){
-  return <p>loading</p>
+  return <LoadingPage/>;
 }
 
   return (

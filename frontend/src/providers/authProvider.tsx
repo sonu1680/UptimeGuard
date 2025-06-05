@@ -24,7 +24,6 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: session, status } = useSession();
-  //console.log(session,"provider")
   const value: AuthContextType = {
     isAuthenticated: !!session?.user,
     isLoading: status === "loading",

@@ -27,7 +27,6 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
 const {isAuthenticated,user,isLoading}=useAuth()
 
   const fetchData = async (id:string) => {
-   // console.log("sonu",id)
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_URL}/getAllSite?userid=${id}`
@@ -42,10 +41,8 @@ const {isAuthenticated,user,isLoading}=useAuth()
   };
 
   useEffect(() => {
-   // console.log("is auth",isAuthenticated)
 
       if (isAuthenticated || !isLoading) {
-       // console.log("sonu",user)
          fetchData(user?.id!);
       }
   }, [isAuthenticated && user]);

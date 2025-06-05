@@ -71,6 +71,7 @@ export interface SocialButtonProps {
   provider: string;
   onClick?: () => void;
   className?: string;
+  isLoading?:Boolean
 }
 export interface NewWebsite {
   websiteName: string | null;

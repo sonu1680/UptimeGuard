@@ -20,6 +20,7 @@ import {
   AlertCircle,
 
   Check,
+  Github,
 
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -35,9 +36,9 @@ export function AuthForm() {
     try {
       setIsLoading(true);
       setError("");
-       await signIn("google",{ callbackUrl: "/dashboard" });
+       await signIn(provider,{ callbackUrl: "/dashboard" });
 
-      setSuccess(`${provider} login successful! Redirecting...`);
+      setSuccess(`Redirecting to ${provider}`);
      
     } catch (err) {
       console.error(err)
@@ -82,13 +83,14 @@ export function AuthForm() {
         <Tabs defaultValue="signup" className="w-full">
           <TabsContent value="signup" className="space-y-4 pt-4">
             <div className="grid gap-3">
-              {/* <SocialButton
+              <SocialButton
                 icon={Github}
                 provider="GitHub"
-                onClick={() => handleSocialLogin("google")}
+                onClick={() => handleSocialLogin("github")}
+                isLoading={isLoading}
                 //@ts-ignore
                 disabled={isLoading}
-              /> */}
+              />
               <SocialButton
                 //@ts-ignore
                 icon={(props) => (
@@ -114,6 +116,7 @@ export function AuthForm() {
                 provider="Google"
                 onClick={() => handleSocialLogin("google")}
                 disabled={isLoading}
+                isLoading={isLoading}
               />
             </div>
           </TabsContent>

@@ -62,6 +62,7 @@ import { useRouter } from "next/navigation";
 import { INTERVAL_CHECK } from "@/constant";
 import axios from "axios";
 import { toast } from "sonner";
+import LoadingPage from "@/components/loadingPage";
 
 
 export default function Dashboard() {
@@ -96,7 +97,7 @@ export default function Dashboard() {
 
 
   if(loading){
-    return <p>loading</p>
+  return <LoadingPage/>;
   }
   const filteredWebsites = websites?.filter((website) => {
     const matchesSearch =
