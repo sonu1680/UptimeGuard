@@ -2,21 +2,21 @@ import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import { prisma } from "./prisma";
 import GitHub from "next-auth/providers/github";
-
 export const { auth, handlers, signIn, signOut } = NextAuth({
+  secret: process.env.AUTH_SECRET,
+  session: {
+    strategy: "jwt", 
+  },
   providers: [
     Google({
       clientId: process.env.NEXT_GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.NEXT_GOOGLE_CLIENT_ID_SECRET || "",
     }),
     GitHub({
-      clientId: process.env.NEXT_GITHUB_CLIENT_ID || "" ,
+      clientId: process.env.NEXT_GITHUB_CLIENT_ID || "",
       clientSecret: process.env.NEXT_GITHUB_CLIENT_ID_SECRET || "",
     }),
   ],
-
-  //-----------------
-
   pages: {
     signIn: "/auth",
   },
@@ -41,7 +41,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         const existingUser = await prisma.user.findUnique({
           where: { email: user.email || "" },
         });
-        token.sub = existingUser?.id;
+        token.sub = existingUser?.id; 
       }
       return token;
     },
