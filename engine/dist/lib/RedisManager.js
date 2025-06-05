@@ -5,23 +5,9 @@ const redis_1 = require("redis");
 const constant_1 = require("../constant");
 class RedisManager {
     constructor() {
-        this.client = (0, redis_1.createClient)({
-            username: process.env.REDIS_USERNAME,
-            password: process.env.REDIS_PASSWORD,
-            socket: {
-                host: "redis-17571.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
-                port: 17571,
-            },
-        });
+        this.client = (0, redis_1.createClient)();
         this.client.connect();
-        this.publisher = (0, redis_1.createClient)({
-            username: process.env.REDIS_USERNAME,
-            password: process.env.REDIS_PASSWORD,
-            socket: {
-                host: "redis-17571.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
-                port: 17571,
-            },
-        });
+        this.publisher = (0, redis_1.createClient)();
         this.publisher.connect();
         this.publisher.on("error", (err) => console.log("Redis Client Error", err));
         console.log("Redis connected");

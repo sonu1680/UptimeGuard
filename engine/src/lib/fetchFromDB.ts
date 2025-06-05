@@ -16,6 +16,7 @@ export const fetchFromDB=async(interval:string)=>{
         },
       })
     );
+    console.log(res);
     if (res.data) {
       RedisManager.getInstance().sendToWorker(res.data);
     } else {

@@ -9,7 +9,7 @@ export class RedisManager {
 
   constructor() {
     this.client = createClient({
-      username: process.env.REDIS_USERNAME,
+      username: process.env.REDIS_USERNAME!,
       password: process.env.REDIS_PASSWORD!,
       socket: {
         host: "redis-17571.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
@@ -19,7 +19,7 @@ export class RedisManager {
     this.client.connect();
 
     this.publisher = createClient({
-      username: process.env.REDIS_USERNAME,
+      username: process.env.REDIS_USERNAME!,
       password: process.env.REDIS_PASSWORD!,
       socket: {
         host: "redis-17571.c305.ap-south-1-1.ec2.redns.redis-cloud.com",

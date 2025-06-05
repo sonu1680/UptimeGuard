@@ -1,7 +1,9 @@
-import {createClient} from "redis";
+import { createClient } from "redis";
 import { checkStatus } from "./lib/checkStatus";
-import dotenv from "dotenv"
-dotenv.config()
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const redisClient = createClient({
   username: process.env.REDIS_USERNAME!,
   password: process.env.REDIS_PASSWORD!,
@@ -14,25 +16,23 @@ const redisClient = createClient({
 async function main() {
   await redisClient.connect();
 
-  redisClient.on("error", (err: any) =>
-    console.log("Redis Client Error", err)
-  );
+  redisClient.on("error", (err: any) => console.log("Redis Client Error", err));
 
-console.log("connected")
+  console.log("connected");
+
   while (true) {
-    const res = await redisClient.rPop("message");
-    if (res) {
-      try {
-        
-        const data = JSON.parse(res);
-        const response=await checkStatus(data);
-        await redisClient.publish(response.batchId,JSON.stringify(response))
-        
-      } catch (error) {
-       // console.error("Error parsing message:", error);
+    try {
+      const res = await redisClient.brPop("message", 0); 
+
+      if (res?.element) {
+
+        const data = JSON.parse(res.element);
+        const response = await checkStatus(data);
+        await redisClient.publish(response.batchId, JSON.stringify(response));
       }
-    } else {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+    } catch (error) {
+      console.error("Worker error:", error);
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // optional cooldown
     }
   }
 }

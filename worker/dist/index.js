@@ -16,33 +16,24 @@ const redis_1 = require("redis");
 const checkStatus_1 = require("./lib/checkStatus");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const redisClient = (0, redis_1.createClient)({
-    username: process.env.REDIS_USERNAME,
-    password: process.env.REDIS_PASSWORD,
-    socket: {
-        host: "redis-17571.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
-        port: 17571,
-    },
-});
+const redisClient = (0, redis_1.createClient)();
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         yield redisClient.connect();
         redisClient.on("error", (err) => console.log("Redis Client Error", err));
         console.log("connected");
         while (true) {
-            const res = yield redisClient.rPop("message");
-            if (res) {
-                try {
-                    const data = JSON.parse(res);
+            try {
+                const res = yield redisClient.brPop("message", 0);
+                if (res === null || res === void 0 ? void 0 : res.element) {
+                    const data = JSON.parse(res.element);
                     const response = yield (0, checkStatus_1.checkStatus)(data);
                     yield redisClient.publish(response.batchId, JSON.stringify(response));
                 }
-                catch (error) {
-                    // console.error("Error parsing message:", error);
-                }
             }
-            else {
-                yield new Promise((resolve) => setTimeout(resolve, 500));
+            catch (error) {
+                console.error("Worker error:", error);
+                yield new Promise((resolve) => setTimeout(resolve, 1000)); // optional cooldown
             }
         }
     });
