@@ -1,5 +1,7 @@
 
 import GoogleProvider from "next-auth/providers/google";
+import GithubProvider from "next-auth/providers/github";
+
 import NextAuth from "next-auth";
 import type { NextAuthConfig } from "next-auth";
 import { prisma } from "./prisma";
@@ -11,14 +13,18 @@ export const authConfig: NextAuthConfig = {
       clientId: process.env.NEXT_GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.NEXT_GOOGLE_CLIENT_ID_SECRET || "",
     }),
+    GithubProvider({
+      clientId: process.env.NEXT_GITHUB_CLIENT_ID || "",
+      clientSecret: process.env.NEXT_GITHUB_CLIENT_ID_SECRET || "",
+    }),
   ],
 
   pages: {
-    signIn: "/auth", // 
+    signIn: "/auth", //
   },
 
   session: {
-    strategy: "jwt", 
+    strategy: "jwt",
   },
 
   callbacks: {
@@ -36,15 +42,14 @@ export const authConfig: NextAuthConfig = {
             },
           });
         }
-        user.id = existingUser?.id||""
+        user.id = existingUser?.id || "";
       }
       return true;
     },
 
     async jwt({ token, user }) {
-   
       if (user) {
-        token.userId = user.id; 
+        token.userId = user.id;
       }
       return token;
     },
