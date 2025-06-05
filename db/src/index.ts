@@ -26,6 +26,7 @@ async function processDBQueue() {
 }
 
 async function processAlertQueue() {
+  
   while (true) {
     const res = await redisClient.brPop("alert_process", 0);
     if (res?.element) {
@@ -41,12 +42,11 @@ async function processAlertQueue() {
 
 async function main() {
   try {
-    await redisClient.connect();
     redisClient.on("error", (err: any) =>
       console.log("Redis Client Error", err)
-    );
+  );
+  await redisClient.connect();
     console.log("Redis connected");
-
     await Promise.all([processDBQueue(), processAlertQueue()]);
   } catch (err) {
     console.error("Fatal Worker Error:", err);
