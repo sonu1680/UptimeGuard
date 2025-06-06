@@ -10,7 +10,7 @@ const HR_1 = "60";
 const HR_24 = "1440";
 
 
-const job = new CronJob("*/2 * * * * *", async () => {
+const job = new CronJob("0 * * * * *", async () => {
   await fetchFromDB(MIN_1);
 });
 

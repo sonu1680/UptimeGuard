@@ -6,17 +6,43 @@ export class RedisManager {
   private client: RedisClientType;
   private publisher: RedisClientType;
   private static instance: RedisManager;
+  private isRedisConnected1: boolean = false;
+  private isRedisConnected2: boolean = false;
 
   constructor() {
-    this.client = createClient();
-    this.client.connect();
+    this.client = createClient({
+      username: encodeURIComponent(process.env.REDIS_USERNAME || ""),
+      password: encodeURIComponent(process.env.REDIS_PASSWORD || ""),
+      socket: {
+        host: "redis-17571.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
+        port: 17571,
+      },
+    });
 
-    this.publisher = createClient();
-    this.publisher.connect();
+    this.publisher = createClient({
+      username: encodeURIComponent(process.env.REDIS_USERNAME || ""),
+      password: encodeURIComponent(process.env.REDIS_PASSWORD || ""),
+      socket: {
+        host: "redis-17571.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
+        port: 17571,
+      },
+    });
+
+    this.client.connect().then((e) => {
+      console.log(e)
+      this.isRedisConnected1 = true;
+
+      console.log("Redis 1 connected");
+    });
+
+    this.publisher.connect().then(() => {
+      this.isRedisConnected2 = true;
+
+      console.log("Redis 2 connected");
+    });
     this.publisher.on("error", (err: any) =>
       console.log("Redis Client Error", err)
     );
-    console.log("Redis connected");
   }
 
   public static getInstance() {
@@ -33,7 +59,7 @@ export class RedisManager {
         this.client.unsubscribe(id);
         this.sendToDB(JSON.parse(data));
         this.sendAlert(JSON.parse(data));
-        console.log(JSON.parse(data))
+        //console.log(JSON.parse(data));
         resolve(JSON.parse(data));
       });
 
@@ -72,6 +98,4 @@ export class RedisManager {
       Math.random().toString().substring(2, 16)
     );
   }
-
-
 }
