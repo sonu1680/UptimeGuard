@@ -1,6 +1,8 @@
 import { CronJob } from "cron";
 import { fetchFromDB } from "./lib/fetchFromDB";
-
+import dotenv from "dotenv"
+import { RedisManager } from "./lib/RedisManager";
+dotenv.config()
 const MIN_1 = "1";
 const MIN_5 = "5";
 const MIN_30 = "30";
@@ -30,3 +32,23 @@ job1.start();
 job2.start();
 job3.start();
 job4.start();
+
+
+
+process.on("SIGINT", async () => {
+  await RedisManager.getInstance().disconnectRedis();
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  await RedisManager.getInstance().disconnectRedis();
+  process.exit(0);
+});
+
+
+process.on("exit", async () => {
+  await RedisManager.getInstance().disconnectRedis();
+  process.exit(0);
+});
+
+

@@ -1,5 +1,5 @@
 import { createClient, RedisClientType } from "redis";
-import { responseDB } from "./lib/responseDB";
+import { alertHandler } from "./lib/alertHandler";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -15,22 +15,20 @@ const redisClient: RedisClientType = createClient({
 
 let isShuttingDown = false;
 
-async function processDBQueue() {
+async function processAlertQueue() {
   while (true) {
     try {
-      const res = await redisClient.brPop("db_process", 0);
+      const res = await redisClient.brPop("alert_process", 0);
       if (res?.element) {
         const data = JSON.parse(res.element);
-        await responseDB(data.data);
+        await alertHandler(data.data);
       }
     } catch (err) {
       if (isShuttingDown) break;
-      console.error("DB Process Error:", err);
+      console.error("Alert Process Error:", err);
     }
   }
 }
-
-
 
 async function main() {
   try {
@@ -39,7 +37,7 @@ async function main() {
     );
     await redisClient.connect();
     console.log("Redis connected");
-    processDBQueue();
+    processAlertQueue();
   } catch (err) {
     console.error("Fatal Worker Error:", err);
   }

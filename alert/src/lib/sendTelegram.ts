@@ -1,7 +1,21 @@
+import { bot } from "./telegramInstance";
 
-import TelegramBot from "node-telegram-bot-api";
-const TOKEN = process.env.TELEGRAM_TOKEN!;
-const bot = new TelegramBot(TOKEN, { polling: true });
+
+process.on("SIGINT", () => {
+  console.log("Stopping Telegram bot polling...");
+  bot.stopPolling().then(() => {
+    console.log("Bot polling stopped");
+    process.exit(0);
+  });
+});
+process.on("SIGTERM", () => {
+  console.log("Stopping Telegram bot polling...");
+  bot.stopPolling().then(() => {
+    console.log("Bot polling stopped");
+    process.exit(0);
+  });
+});
+
 
 export const sendToTelegram = async (chatId: string,msg:string) => {
   try {
@@ -13,6 +27,8 @@ return 200;
     //console.error("Error sending Telegram message:", error);
   }
 };
+
+
 
 
 bot.on("message", (msg) => {

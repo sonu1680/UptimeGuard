@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String    @id @default(uuid())
+  name     String
+  email    String    @unique
+  provider String?
+  monitor  Monitor[]
+}
+
+model Monitor {
+  monitorId     String         @id @default(uuid())
+  websiteName   String
+  url           String
+  icon          String?
+  createAt      DateTime       @default(now())
+  isPaused      Boolean?       @default(false)
+  checkInterval String
+  lastCheckAt   DateTime       @default(now())
+  status        String?        @default("CHECKING")
+  responseTime  String         @default("0")
+  uptime        String         @default("100")
+  userId        String
+  User          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  alertLogs     AlertLog[]
+  responseLog   ResponseLog[]
+  notification  Notification?  @relation("MonitorNotification") 
+}
+
+model ResponseLog {
+  id           String   @id @default(uuid())
+  responseTime String
+  responseCode String
+  checkAt      DateTime
+  monitorId    String
+  monitor      Monitor  @relation(fields: [monitorId], references: [monitorId], onDelete: Cascade)
+}
+
+model AlertLog {
+  id           String   @id @default(uuid())
+  msg          String
+  alertType    String
+  sentAt       DateTime
+  responseTime String
+  responseCode String
+  status       String
+  errorMsg     String
+  monitorId    String
+  monitor      Monitor  @relation(fields: [monitorId], references: [monitorId], onDelete: Cascade)
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  emailId    String?
+  telegramId String?
+  isTelegram Boolean  @default(false)
+  isEmail    Boolean  @default(false)
+monitorId String?  @unique
+monitor   Monitor? @relation("MonitorNotification", fields: [monitorId], references: [monitorId], onDelete: Cascade)
+}

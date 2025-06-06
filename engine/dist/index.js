@@ -8,9 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const cron_1 = require("cron");
 const fetchFromDB_1 = require("./lib/fetchFromDB");
+const dotenv_1 = __importDefault(require("dotenv"));
+const RedisManager_1 = require("./lib/RedisManager");
+dotenv_1.default.config();
 const MIN_1 = "1";
 const MIN_5 = "5";
 const MIN_30 = "30";
@@ -36,3 +42,15 @@ job1.start();
 job2.start();
 job3.start();
 job4.start();
+process.on("SIGINT", () => __awaiter(void 0, void 0, void 0, function* () {
+    yield RedisManager_1.RedisManager.getInstance().disconnectRedis();
+    process.exit(0);
+}));
+process.on("SIGTERM", () => __awaiter(void 0, void 0, void 0, function* () {
+    yield RedisManager_1.RedisManager.getInstance().disconnectRedis();
+    process.exit(0);
+}));
+process.on("exit", () => __awaiter(void 0, void 0, void 0, function* () {
+    yield RedisManager_1.RedisManager.getInstance().disconnectRedis();
+    process.exit(0);
+}));

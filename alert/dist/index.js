@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const redis_1 = require("redis");
-const responseDB_1 = require("./lib/responseDB");
+const alertHandler_1 = require("./lib/alertHandler");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const redisClient = (0, redis_1.createClient)({
@@ -25,20 +25,20 @@ const redisClient = (0, redis_1.createClient)({
     },
 });
 let isShuttingDown = false;
-function processDBQueue() {
+function processAlertQueue() {
     return __awaiter(this, void 0, void 0, function* () {
         while (true) {
             try {
-                const res = yield redisClient.brPop("db_process", 0);
+                const res = yield redisClient.brPop("alert_process", 0);
                 if (res === null || res === void 0 ? void 0 : res.element) {
                     const data = JSON.parse(res.element);
-                    yield (0, responseDB_1.responseDB)(data.data);
+                    yield (0, alertHandler_1.alertHandler)(data.data);
                 }
             }
             catch (err) {
                 if (isShuttingDown)
                     break;
-                console.error("DB Process Error:", err);
+                console.error("Alert Process Error:", err);
             }
         }
     });
@@ -49,7 +49,7 @@ function main() {
             redisClient.on("error", (err) => console.log("Redis Client Error", err));
             yield redisClient.connect();
             console.log("Redis connected");
-            processDBQueue();
+            processAlertQueue();
         }
         catch (err) {
             console.error("Fatal Worker Error:", err);

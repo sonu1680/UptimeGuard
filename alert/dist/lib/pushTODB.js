@@ -9,27 +9,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchFromDB = void 0;
+exports.pushToDb = void 0;
 const prisma_1 = require("./prisma");
-const RedisManager_1 = require("./RedisManager");
-const tryCatchHandler_1 = require("./tryCatchHandler");
-const fetchFromDB = (interval) => __awaiter(void 0, void 0, void 0, function* () {
-    const res = yield (0, tryCatchHandler_1.tryCatchHandler)(() => prisma_1.prisma.monitor.findMany({
-        where: {
-            checkInterval: interval,
-        },
-        select: {
-            url: true,
-            monitorId: true,
-            checkInterval: true,
-        },
-    }));
-    // console.log(res);
-    if (res.data) {
-        RedisManager_1.RedisManager.getInstance().sendToWorker(res.data);
-    }
-    else {
-        console.error("Failed to fetch monitors or none found.");
+const tryCathHandler_1 = require("./tryCathHandler");
+const pushToDb = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    for (const site of data.sites) {
+        if (site) {
+            const res = yield (0, tryCathHandler_1.tryCatchHandler)(() => prisma_1.prisma.responseLog.create({
+                data: {
+                    monitorId: site.monitorId,
+                    responseCode: site.responseCode,
+                    responseTime: site.responseTime,
+                    checkAt: site.checkAt,
+                },
+            }));
+            console.log(res);
+        }
     }
 });
-exports.fetchFromDB = fetchFromDB;
+exports.pushToDb = pushToDb;

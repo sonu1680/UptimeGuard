@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/lib/alerthandler.ts","./src/lib/prisma.ts","./src/lib/sendmail.ts","./src/lib/sendtelegram.ts","./src/lib/telegraminstance.ts","./src/lib/trycathhandler.ts","./src/types/index.ts"],"version":"5.8.3"}
