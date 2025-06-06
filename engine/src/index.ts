@@ -34,21 +34,3 @@ job3.start();
 job4.start();
 
 
-
-process.on("SIGINT", async () => {
-  await RedisManager.getInstance().disconnectRedis();
-  process.exit(0);
-});
-
-process.on("SIGTERM", async () => {
-  await RedisManager.getInstance().disconnectRedis();
-  process.exit(0);
-});
-
-
-process.on("exit", async () => {
-  await RedisManager.getInstance().disconnectRedis();
-  process.exit(0);
-});
-
-

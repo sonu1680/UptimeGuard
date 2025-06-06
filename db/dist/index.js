@@ -16,65 +16,30 @@ const redis_1 = require("redis");
 const responseDB_1 = require("./lib/responseDB");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const redisClient = (0, redis_1.createClient)({
-    username: process.env.REDIS_USERNAME,
-    password: process.env.REDIS_PASSWORD,
-    socket: {
-        host: "redis-17571.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
-        port: 17571,
-    },
-});
-let isShuttingDown = false;
-function processDBQueue() {
-    return __awaiter(this, void 0, void 0, function* () {
-        while (true) {
-            try {
-                const res = yield redisClient.brPop("db_process", 0);
-                if (res === null || res === void 0 ? void 0 : res.element) {
-                    const data = JSON.parse(res.element);
-                    yield (0, responseDB_1.responseDB)(data.data);
-                }
-            }
-            catch (err) {
-                if (isShuttingDown)
-                    break;
-                console.error("DB Process Error:", err);
-            }
-        }
-    });
-}
+const redisClient = (0, redis_1.createClient)();
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             redisClient.on("error", (err) => console.log("Redis Client Error", err));
             yield redisClient.connect();
             console.log("Redis connected");
-            processDBQueue();
+            while (true) {
+                try {
+                    const res = yield redisClient.brPop("db_process", 0);
+                    if (res === null || res === void 0 ? void 0 : res.element) {
+                        const data = JSON.parse(res.element);
+                        yield (0, responseDB_1.responseDB)(data.data);
+                    }
+                }
+                catch (err) {
+                    console.error("DB Process Error:", err);
+                }
+            }
         }
         catch (err) {
             console.error("Fatal Worker Error:", err);
         }
     });
 }
-function shutdown() {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (isShuttingDown)
-            return;
-        isShuttingDown = true;
-        console.log("Shutting down...");
-        try {
-            yield redisClient.quit();
-            console.log("Redis disconnected");
-        }
-        catch (err) {
-            console.error("Error during Redis quit:", err);
-        }
-        process.exit(0);
-    });
-}
-process.on("SIGINT", shutdown);
-process.on("SIGTERM", shutdown);
 main().catch(() => {
-    process.on("SIGINT", shutdown);
-    process.on("SIGTERM", shutdown);
 });

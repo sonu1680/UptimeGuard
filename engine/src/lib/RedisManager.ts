@@ -7,35 +7,16 @@ export class RedisManager {
   private publisher: RedisClientType;
   private static instance: RedisManager;
 
-   constructor() {
-    this.client = createClient({
-      username: process.env.REDIS_USERNAME,
-      password: process.env.REDIS_PASSWORD,
-      socket: {
-        host: "redis-17571.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
-        port: 17571,
-      },
-    });
+  constructor() {
+    this.client = createClient();
+    this.client.connect();
 
-    this.client.on("error", (err: any) =>
-      console.log("Redis Client Error", err)
-    );
-     this.client.connect();
-    console.log("Redis client connected ");
-
-    this.publisher = createClient({
-      username: process.env.REDIS_USERNAME,
-      password: process.env.REDIS_PASSWORD,
-      socket: {
-        host: "redis-17571.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
-        port: 17571,
-      },
-    });
-     this.publisher.connect();
+    this.publisher = createClient();
+    this.publisher.connect();
     this.publisher.on("error", (err: any) =>
       console.log("Redis Client Error", err)
     );
-    console.log("Redis publisher connected");
+    console.log("Redis connected");
   }
 
   public static getInstance() {
@@ -48,10 +29,11 @@ export class RedisManager {
   public sendToWorker(websites: sendToWorker[]): Promise<dataFromWorker> {
     const id = this.randomId();
     return new Promise<dataFromWorker>((resolve) => {
-      this.client.subscribe(id, async (data) => {
-        await this.client.unsubscribe(id);
+      this.client.subscribe(id, (data) => {
+        this.client.unsubscribe(id);
         this.sendToDB(JSON.parse(data));
         this.sendAlert(JSON.parse(data));
+        console.log(JSON.parse(data))
         resolve(JSON.parse(data));
       });
 
@@ -84,18 +66,12 @@ export class RedisManager {
     }
   }
 
-  public async disconnectRedis() {
-    console.log("Shutting down... disconnecting Redis");
-    await this.client.quit()
-    await this.publisher.quit();
-
-    process.exit(0);
-  }
-
   public randomId() {
     return (
       Math.random().toString().substring(2, 16) +
       Math.random().toString().substring(2, 16)
     );
   }
+
+
 }

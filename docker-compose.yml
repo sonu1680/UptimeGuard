@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: uptimeguard-api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - db
+      - worker
+      - alert
+
+  db:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    container_name: uptimeguard-db
+    environment:
+      - NODE_ENV=production
+
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    container_name: uptimeguard-worker
+    environment:
+      - NODE_ENV=production
+
+  alert:
+    build:
+      context: ./alert
+      dockerfile: Dockerfile
+    container_name: uptimeguard-alert
+    environment:
+      - NODE_ENV=production

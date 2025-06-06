@@ -16,15 +16,7 @@ const redis_1 = require("redis");
 const alertHandler_1 = require("./lib/alertHandler");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const redisClient = (0, redis_1.createClient)({
-    username: process.env.REDIS_USERNAME,
-    password: process.env.REDIS_PASSWORD,
-    socket: {
-        host: "redis-17571.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
-        port: 17571,
-    },
-});
-let isShuttingDown = false;
+const redisClient = (0, redis_1.createClient)();
 function processAlertQueue() {
     return __awaiter(this, void 0, void 0, function* () {
         while (true) {
@@ -36,8 +28,6 @@ function processAlertQueue() {
                 }
             }
             catch (err) {
-                if (isShuttingDown)
-                    break;
                 console.error("Alert Process Error:", err);
             }
         }
@@ -56,25 +46,5 @@ function main() {
         }
     });
 }
-function shutdown() {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (isShuttingDown)
-            return;
-        isShuttingDown = true;
-        console.log("Shutting down...");
-        try {
-            yield redisClient.quit();
-            console.log("Redis disconnected");
-        }
-        catch (err) {
-            console.error("Error during Redis quit:", err);
-        }
-        process.exit(0);
-    });
-}
-process.on("SIGINT", shutdown);
-process.on("SIGTERM", shutdown);
 main().catch(() => {
-    process.on("SIGINT", shutdown);
-    process.on("SIGTERM", shutdown);
 });

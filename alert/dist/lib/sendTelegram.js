@@ -11,20 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendToTelegram = void 0;
 const telegramInstance_1 = require("./telegramInstance");
-process.on("SIGINT", () => {
-    console.log("Stopping Telegram bot polling...");
-    telegramInstance_1.bot.stopPolling().then(() => {
-        console.log("Bot polling stopped");
-        process.exit(0);
-    });
-});
-process.on("SIGTERM", () => {
-    console.log("Stopping Telegram bot polling...");
-    telegramInstance_1.bot.stopPolling().then(() => {
-        console.log("Bot polling stopped");
-        process.exit(0);
-    });
-});
 const sendToTelegram = (chatId, msg) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield telegramInstance_1.bot.sendMessage(chatId, msg);
