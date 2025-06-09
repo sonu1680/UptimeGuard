@@ -19,12 +19,13 @@ import {
 import Link from "next/link";
 import Navbar from "@/components/navbar";
 import { COMPANIES, FEATURES, INTEGRATION, STATS, TESTIMONIALS } from "@/constant";
+import { useRouter } from "next/navigation";
 
 export default function UptimeMonitorLanding() {
   const [email, setEmail] = useState("");
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
-
+const router=useRouter()
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -111,6 +112,7 @@ export default function UptimeMonitorLanding() {
               </div>
               <Button
                 size="lg"
+                onClick={() => router.push("/auth")}
                 className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-2xl shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 h-11 sm:h-12 px-6 sm:px-8 group w-full sm:w-auto"
               >
                 <span className="mr-2">Start Free</span>

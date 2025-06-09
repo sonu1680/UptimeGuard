@@ -19,7 +19,6 @@ async function processAlertQueue() {
     try {
       const res = await redisClient.brPop("alert_process", 0);
       if (res?.element) {
-        console.log(res)
         const data = JSON.parse(res.element);
         await alertHandler(data.data);
       }

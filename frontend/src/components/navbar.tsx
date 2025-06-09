@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button"
 import { Activity, ChevronDown, Menu, X, Zap, BarChart3, Shield } from "lucide-react"
 import Link from "next/link"
 import { ThemeToggle } from "./theme-toggle"
+import { useRouter } from "next/navigation"
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-
+const router=useRouter()
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20)
@@ -55,8 +56,12 @@ export default function Navbar() {
                 >
                   <Activity className="h-5 w-5 text-primary group-hover/item:scale-110 transition-transform duration-200" />
                   <div>
-                    <div className="text-sm font-medium">Website Monitoring</div>
-                    <div className="text-xs text-muted-foreground">Monitor your websites 24/7</div>
+                    <div className="text-sm font-medium">
+                      Website Monitoring
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Monitor your websites 24/7
+                    </div>
                   </div>
                 </Link>
                 <Link
@@ -66,7 +71,9 @@ export default function Navbar() {
                   <Zap className="h-5 w-5 text-primary group-hover/item:scale-110 transition-transform duration-200" />
                   <div>
                     <div className="text-sm font-medium">API Monitoring</div>
-                    <div className="text-xs text-muted-foreground">Track API performance</div>
+                    <div className="text-xs text-muted-foreground">
+                      Track API performance
+                    </div>
                   </div>
                 </Link>
                 <Link
@@ -76,7 +83,9 @@ export default function Navbar() {
                   <BarChart3 className="h-5 w-5 text-primary group-hover/item:scale-110 transition-transform duration-200" />
                   <div>
                     <div className="text-sm font-medium">Analytics</div>
-                    <div className="text-xs text-muted-foreground">Detailed insights & reports</div>
+                    <div className="text-xs text-muted-foreground">
+                      Detailed insights & reports
+                    </div>
                   </div>
                 </Link>
               </div>
@@ -135,9 +144,10 @@ export default function Navbar() {
           </Link>
           <Button
             size="sm"
+            onClick={()=>router.push("/auth")}
             className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 border-0"
           >
-            <span className="relative z-10">Start Free</span>
+              <span className="relative z-10">Start Free</span>
           </Button>
 
           {/* Mobile menu button */}
@@ -147,7 +157,11 @@ export default function Navbar() {
             className="lg:hidden text-muted-foreground hover:text-foreground hover:bg-muted/50"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
           </Button>
         </div>
       </div>
@@ -185,7 +199,7 @@ export default function Navbar() {
           </Link>
           <div className="pt-4 border-t border-border">
             <Link
-              href="#"
+              href="/auth"
               className="block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-2"
             >
               Sign in
@@ -194,5 +208,5 @@ export default function Navbar() {
         </nav>
       </div>
     </header>
-  )
+  );
 }
