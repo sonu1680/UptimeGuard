@@ -1,57 +1,70 @@
-# 🌐 UptimeGuard
+<p align="center">
+  <img src="./public/banner.png" alt="UptimeGuard Banner" />
+</p>
 
-[![UptimeGuard Banner](./public/banner.png)](https://uptimeguard.sonupandit.in)
+<h1 align="center">UptimeGuard 🌐</h1>
 
-**UptimeGuard** is a modern and reliable uptime monitoring platform that tracks the availability of websites, alerts users when downtime is detected, and displays live status metrics.
+<p align="center">
+  A full-stack uptime monitoring platform to track websites, receive alerts, and visualize health data in real time.
+</p>
 
-🔗 **Live Website**: [https://uptimeguard.sonupandit.in](https://uptimeguard.sonupandit.in)
+<p align="center">
+  <a href="https://uptimeguard.sonupandit.in" target="_blank"><strong>🔗 Visit Live Website</strong></a>
+</p>
 
----
-
-## 🚀 Features
-
-- 🌍 Add and monitor multiple websites
-- 📊 Custom interval-based checks (1 min, 5 min, 30 min, 1 hr, 24 hrs)
-- 🧠 Smart alerting with failure threshold handling
-- 📧 Email alerts on downtime and recovery (optional)
-- 🔒 Auth support (Google & Credentials)
-- ⚙️ Admin dashboard to manage monitors
-- 📈 Visual status history per site
-- 🔄 Background jobs powered by Cron & Workers
-- 🛡️ Fully protected API routes with session-based auth
-
----
-
-## 🛠️ Tech Stack
-
-- **Frontend**: Next.js 14 (App Router), TypeScript, Tailwind CSS
-- **Backend**: Node.js, Cron Jobs
-- **Database**: PostgreSQL with Prisma ORM
-- **Auth**: NextAuth (Google + Email/password)
-- **Cache**: Redis (via Upstash/Azure Redis)
-- **Deployment**: Vercel (Frontend), Railway/EC2 (Backend API)
-- **Monitoring**: Custom Worker & Queue Logic
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-14-black?logo=next.js" />
+  <img src="https://img.shields.io/badge/TypeScript-blue?logo=typescript" />
+  <img src="https://img.shields.io/badge/TailwindCSS-38B2AC?logo=tailwindcss" />
+  <img src="https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql" />
+  <img src="https://img.shields.io/badge/Redis-DC382D?logo=redis" />
+  <img src="https://img.shields.io/badge/Prisma-2D3748?logo=prisma" />
+</p>
 
 ---
 
-## 📷 Preview
+## 🖥️ Preview
 
-![UptimeGuard Screenshot](./public/preview.png)
+### 🔧 Dashboard
+<img src="./public/dashboard.png" alt="Dashboard Preview" width="100%" />
+
+### 🟢 Public Status Page
+<img src="./public/status-page.png" alt="Status Page" width="100%" />
 
 ---
 
-## ⚙️ Getting Started
+## ⚡ Features
+
+- ✅ Add and manage websites to monitor
+- ⏱ Custom interval monitoring (1m, 5m, 30m, 1hr, 24hr)
+- 📉 Get notified on downtime (with retry & threshold logic)
+- 💬 Email notifications (configurable)
+- 👥 Auth system using Google and email/password
+- 🔐 Protected routes using `NextAuth`
+- 📈 Visual history of uptime checks
+- 🔄 Background jobs (cron-based worker system)
+- 📊 Redis caching for fast performance
+
+---
+
+## 🛠 Tech Stack
+
+| Layer       | Tools Used |
+|-------------|------------|
+| **Frontend**| Next.js 14, TypeScript, Tailwind CSS |
+| **Backend** | Node.js, Cron jobs, NextAuth |
+| **Database**| PostgreSQL + Prisma |
+| **Auth**    | NextAuth (Google + Credentials) |
+| **Queue/Cache** | Redis (Upstash or Azure Redis) |
+| **Deployment** | Vercel (frontend) + Railway / EC2 (backend API) |
+
+---
+
+## 🚀 Getting Started
+
+### 🧩 Clone & Install
 
 ```bash
-# Clone the repository
 git clone https://github.com/sonu1680/UptimeGuard.git
 cd UptimeGuard
-
-# Install dependencies
 npm install
-
-# Create .env file
-cp .env.example .env
-
-# Start the development server
-npm run dev
