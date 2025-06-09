@@ -21,8 +21,20 @@ const responseDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
                     responseCode: site.responseCode,
                     responseTime: site.responseTime,
                     checkAt: site.checkAt,
+                    status: site.status || "checking"
                 },
             }));
+            const [onlineCount, offlineCount] = yield Promise.all([
+                prisma_1.prisma.responseLog.count({
+                    where: { monitorId: site.monitorId, status: "online" },
+                }),
+                prisma_1.prisma.responseLog.count({
+                    where: { monitorId: site.monitorId, status: "offline" },
+                }),
+            ]);
+            const total = onlineCount + offlineCount;
+            const uptime = total > 0 ? (onlineCount / total) * 100 : 0;
+            console.log(uptime);
             const a = yield (0, tryCathHandler_1.tryCatchHandler)(() => prisma_1.prisma.monitor.update({
                 where: {
                     monitorId: site.monitorId,
@@ -30,8 +42,8 @@ const responseDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
                 data: {
                     lastCheckAt: new Date(),
                     responseTime: site.responseTime,
-                    uptime: "100",
-                    status: site.status
+                    uptime: uptime.toFixed(2).toString(),
+                    status: site.status || "checking",
                 },
             }));
         }

@@ -34,6 +34,7 @@ function main() {
                 try {
                     const res = yield redisClient.brPop("db_process", 0);
                     if (res === null || res === void 0 ? void 0 : res.element) {
+                        console.log(res);
                         const data = JSON.parse(res.element);
                         yield (0, responseDB_1.responseDB)(data.data);
                     }
