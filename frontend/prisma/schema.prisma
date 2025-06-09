@@ -40,6 +40,8 @@ model ResponseLog {
   responseCode String
   checkAt      DateTime
   monitorId    String
+  status        String?        @default("checking")
+
   monitor      Monitor  @relation(fields: [monitorId], references: [monitorId], onDelete: Cascade)
 }
 

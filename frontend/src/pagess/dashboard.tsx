@@ -724,8 +724,10 @@ try {
                                       <div className="font-semibold text-foreground group-hover:text-primary transition-colors">
                                         {website.websiteName}
                                       </div>
-                                      <div className="text-sm text-muted-foreground flex items-center group-hover:text-foreground/70 transition-colors">
-                                        {website.url}
+                                      <div className="text-sm text-muted-foreground flex items-center group-hover:text-foreground/70 transition-colors overflow-hidden  ">
+                                        {website.url.length > 100
+                                          ? `${website.url.slice(0, 30)}...`
+                                          : website.url}
                                         <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                                       </div>
                                     </div>
@@ -754,10 +756,9 @@ try {
                                     <div className="w-20 h-2 bg-muted/50 rounded-full overflow-hidden">
                                       <div
                                         className={`h-full rounded-full transition-all duration-500 ${
-                                          parseInt(website.responseTime) >= 99.5
+                                          parseInt(website.uptime) >= 99.5
                                             ? "bg-gradient-to-r from-green-500 to-green-400"
-                                            : parseInt(website.responseTime) >=
-                                              95
+                                            : parseInt(website.uptime) >= 95
                                             ? "bg-gradient-to-r from-yellow-500 to-yellow-400"
                                             : "bg-gradient-to-r from-red-500 to-red-400"
                                         }`}

@@ -16,7 +16,7 @@ export const checkStatus = async (data: dataFromEngine) => {
           responseTime: (performance.now() - start).toFixed(2).toString(),
           checkAt: new Date(),
           responseCode: res.status.toString(),
-          status: "online",
+          status: res.status<400?"online":"offline"
         };
       } catch (error: any) {
         return {
@@ -25,7 +25,7 @@ export const checkStatus = async (data: dataFromEngine) => {
           checkInterval: site.checkInterval,
           responseTime: (performance.now() - start).toFixed(2),
           checkAt: new Date(),
-          responseCode: error?.response?.status?.toString() || "N/A",
+          responseCode: error?.response?.status?.toString() || "500",
           status: "offline",
           error: error?.message || "Unknown error",
         };
@@ -42,7 +42,7 @@ export const checkStatus = async (data: dataFromEngine) => {
           checkInterval: "unknown",
           responseTime: "0",
           checkAt: Date.now().toString(),
-          responseCode: "N/A",
+          responseCode: "500",
           status: "offline",
           error: "Unhandled rejection",
         }

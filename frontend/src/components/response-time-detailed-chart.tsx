@@ -4,9 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { TrendingUp, TrendingDown, Minus } from "lucide-react"
 import { ResponseTimeDetailedChartProps } from "@/types"
+import { useEffect } from "react"
 
 
 export function ResponseTimeDetailedChart({ data, timeRange }: ResponseTimeDetailedChartProps) {
+
   const maxValue = Math.max(...data.map((d) => parseInt(d.responseTime)))
   const minValue = Math.min(...data.filter((d) => parseInt(d.responseTime )> 0).map((d) => parseInt(d.responseTime)))
   const avgValue = Math.round(
@@ -92,7 +94,7 @@ export function ResponseTimeDetailedChart({ data, timeRange }: ResponseTimeDetai
               >
                 <div
                   className={`${getStatusColor(
-                    point.status || "success"
+                    point.status || "checking"
                   )} hover:opacity-80 transition-all duration-200 rounded-sm min-w-[2px] cursor-pointer relative`}
                   style={{
                     height:
@@ -117,7 +119,7 @@ export function ResponseTimeDetailedChart({ data, timeRange }: ResponseTimeDetai
                       ? `${point.responseTime}ms`
                       : "Timeout"}
                     <br />
-                    <span className="capitalize">{point.status||"up|down"}</span>
+                    <span className="capitalize">{point.status||""}</span>
                   </div>
                 </div>
               </div>

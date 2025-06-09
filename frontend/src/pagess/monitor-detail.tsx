@@ -90,8 +90,6 @@ export default function MonitorDetail() {
     }
   };
 
-
-
   if (!monitor) {
     return <LoadingPage />;
   }
@@ -146,7 +144,7 @@ export default function MonitorDetail() {
               </div>
               <div className="flex items-center gap-2 sm:gap-3">
                 <WebsiteStatusBadge
-                  status={monitor.status||"checking"}
+                  status={monitor.status || "checking"}
                   className="text-xs"
                 />
                 <ThemeToggle />
@@ -173,9 +171,18 @@ export default function MonitorDetail() {
                       <Activity className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                     </CardHeader>
                     <CardContent className="p-3 sm:p-4 pt-0">
-                      <div className="text-lg sm:text-2xl font-bold text-green-600 dark:text-green-400">
-                        Online
+                      <div
+                        className={`text-lg sm:text-2xl font-bold ${
+                          monitor.status === "online"
+                            ? "text-green-600 dark:text-green-400"
+                            : monitor.status === "offline"
+                            ? "text-red-600 dark:text-red-400"
+                            : "text-yellow-600 dark:yellow-red-400"
+                        }`}
+                      >
+                        {monitor.status || "checking"}
                       </div>
+
                       <p className="text-xs text-muted-foreground">
                         Last: {formatLastCheck(monitor.lastCheckAt)}
                       </p>
@@ -272,7 +279,7 @@ export default function MonitorDetail() {
                         Performance Analytics
                       </h2>
                       <div className="flex space-x-2">
-                        {(["24h", "7d", "30d"] as const).map((range) => (
+                        {(["24h"] as const).map((range) => (
                           <Button
                             key={range}
                             variant={
@@ -295,7 +302,7 @@ export default function MonitorDetail() {
                     {/* response time chart */}
                     <ResponseTimeDetailedChart
                       data={monitor.responseLog}
-                      timeRange={timeRange}
+                      timeRange={"24h"}
                     />
                   </TabsContent>
 
@@ -387,7 +394,19 @@ export default function MonitorDetail() {
                                       Edit
                                     </Button>
                                   </DialogTrigger>
-                                  <UpdateSiteDialog monitorId={monitor.monitorId} emailId={monitor.notification.emailId} telegramId={monitor.notification.telegramId} checkInterval={monitor.checkInterval} url={monitor.url} websiteName={monitor.websiteName} isEmail={monitor.notification.isEmail} isTelegram={monitor.notification.isTelegram}   closeDialog={() => setIsAddDialogOpen(false)}    />
+                                  <UpdateSiteDialog
+                                    monitorId={monitor.monitorId}
+                                    emailId={monitor.notification.emailId}
+                                    telegramId={monitor.notification.telegramId}
+                                    checkInterval={monitor.checkInterval}
+                                    url={monitor.url}
+                                    websiteName={monitor.websiteName}
+                                    isEmail={monitor.notification.isEmail}
+                                    isTelegram={monitor.notification.isTelegram}
+                                    closeDialog={() =>
+                                      setIsAddDialogOpen(false)
+                                    }
+                                  />
                                 </Dialog>
                               </div>
                             </CardContent>
