@@ -25,7 +25,6 @@ async function main() {
       try {
         const res = await redisClient.brPop("db_process", 0);
         if (res?.element) {
-          console.log(res)
           const data = JSON.parse(res.element);
           await responseDB(data.data);
         }
