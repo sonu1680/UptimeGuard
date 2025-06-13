@@ -23,7 +23,6 @@ const HR_1 = "60";
 const HR_24 = "1440";
 const job = new cron_1.CronJob("0 * * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, fetchFromDB_1.fetchFromDB)(MIN_1);
-    console.log("ss");
 }));
 const job1 = new cron_1.CronJob("0 */5 * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, fetchFromDB_1.fetchFromDB)(MIN_5);

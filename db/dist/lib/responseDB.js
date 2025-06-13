@@ -34,7 +34,6 @@ const responseDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
             ]);
             const total = onlineCount + offlineCount;
             const uptime = total > 0 ? (onlineCount / total) * 100 : 0;
-            console.log(uptime);
             const a = yield (0, tryCathHandler_1.tryCatchHandler)(() => prisma_1.prisma.monitor.update({
                 where: {
                     monitorId: site.monitorId,

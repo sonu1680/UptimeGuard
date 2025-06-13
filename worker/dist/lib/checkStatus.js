@@ -28,7 +28,7 @@ const checkStatus = (data) => __awaiter(void 0, void 0, void 0, function* () {
                 responseTime: (performance.now() - start).toFixed(2).toString(),
                 checkAt: new Date(),
                 responseCode: res.status.toString(),
-                status: "online",
+                status: res.status < 400 ? "online" : "offline"
             };
         }
         catch (error) {
@@ -38,7 +38,7 @@ const checkStatus = (data) => __awaiter(void 0, void 0, void 0, function* () {
                 checkInterval: site.checkInterval,
                 responseTime: (performance.now() - start).toFixed(2),
                 checkAt: new Date(),
-                responseCode: ((_b = (_a = error === null || error === void 0 ? void 0 : error.response) === null || _a === void 0 ? void 0 : _a.status) === null || _b === void 0 ? void 0 : _b.toString()) || "N/A",
+                responseCode: ((_b = (_a = error === null || error === void 0 ? void 0 : error.response) === null || _a === void 0 ? void 0 : _a.status) === null || _b === void 0 ? void 0 : _b.toString()) || "500",
                 status: "offline",
                 error: (error === null || error === void 0 ? void 0 : error.message) || "Unknown error",
             };
@@ -52,7 +52,7 @@ const checkStatus = (data) => __awaiter(void 0, void 0, void 0, function* () {
             checkInterval: "unknown",
             responseTime: "0",
             checkAt: Date.now().toString(),
-            responseCode: "N/A",
+            responseCode: "500",
             status: "offline",
             error: "Unhandled rejection",
         });

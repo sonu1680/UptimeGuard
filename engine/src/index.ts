@@ -1,7 +1,6 @@
 import { CronJob } from "cron";
 import { fetchFromDB } from "./lib/fetchFromDB";
 import dotenv from "dotenv"
-import { RedisManager } from "./lib/RedisManager";
 dotenv.config()
 const MIN_1 = "1";
 const MIN_5 = "5";
