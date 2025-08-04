@@ -9,8 +9,7 @@ COPY .env .env
 
 RUN pnpm install --frozen-lockfile
 
-COPY prisma ./prisma
-RUN pnpm dlx prisma generate
+
 
 COPY . .
 
