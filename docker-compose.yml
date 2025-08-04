@@ -1,19 +1,20 @@
 version: "3.9"
 
 services:
-  api:
+
+
+  alert:
     build:
-      context: ./api
+      context: ./alert
       dockerfile: Dockerfile
-    container_name: uptimeguard-api
-    ports:
-      - "3000:3000"
+    container_name: uptimeguard-alert 
     environment:
       - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
     depends_on:
-      - db
-      - worker
-      - alert
+      - redis   
+
+
 
   db:
     build:
@@ -22,6 +23,22 @@ services:
     container_name: uptimeguard-db
     environment:
       - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+
+
+  engine:
+    build:
+      context: ./engine
+      dockerfile: Dockerfile
+    container_name: uptimeguard-engine
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis  
+
 
   worker:
     build:
@@ -30,11 +47,13 @@ services:
     container_name: uptimeguard-worker
     environment:
       - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis  
 
-  alert:
-    build:
-      context: ./alert
-      dockerfile: Dockerfile
-    container_name: uptimeguard-alert
-    environment:
-      - NODE_ENV=production
+  redis:
+    image: redis:7
+    container_name: uptimeguard-redis
+    ports:
+      - "6379:6379"
+    restart: always

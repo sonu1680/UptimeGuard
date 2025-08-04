@@ -11,20 +11,16 @@ export class RedisManager {
 
   constructor() {
     this.client = createClient({
-      username: encodeURIComponent(process.env.REDIS_USERNAME || ""),
-      password: encodeURIComponent(process.env.REDIS_PASSWORD || ""),
       socket: {
-        host: "redis-17571.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
-        port: 17571,
+        host: "redis",
+        port: 6379,
       },
     });
 
     this.publisher = createClient({
-      username: encodeURIComponent(process.env.REDIS_USERNAME || ""),
-      password: encodeURIComponent(process.env.REDIS_PASSWORD || ""),
       socket: {
-        host: "redis-17571.c305.ap-south-1-1.ec2.redns.redis-cloud.com",
-        port: 17571,
+        host: "redis",
+        port: 6379,
       },
     });
 
