@@ -13,6 +13,7 @@ COPY prisma ./prisma
 RUN pnpm dlx prisma generate
 
 COPY . .
-RUN pnpm build
+
+
 
 CMD ["node", "dist/index.js"]

@@ -28,7 +28,7 @@ const fetchFromDB = (interval) => __awaiter(void 0, void 0, void 0, function* ()
         RedisManager_1.RedisManager.getInstance().sendToWorker(res.data);
     }
     else {
-        console.error("Failed to fetch monitors or none found.");
+        console.error("Failed to fetch monitors or none found.", res);
     }
 });
 exports.fetchFromDB = fetchFromDB;
